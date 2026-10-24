@@ -1,28 +1,28 @@
-# Art guide (for the human artist)
+# Art guide (for the human artist: Johnae)
 
-**Rule:** all art is made by a person. No AI-generated images, sprites, icons or logos (CLAUDE.md rule 3).
-Claude writes the code that *draws* your art, never the art itself.
+**Rule:** all art is made by a person, by hand. No AI-generated images, sprites, icons or logos (CLAUDE.md rule 3).
+Claude does not write or edit anything inside `src/art/`.
 
-## Where artwork goes
-- `src/art/` (this folder does not exist yet; create it) holds everything human-made:
-  - `palettes.ts`: the colors for Moon and Mars (sky, ground, ledge) and later suit colors.
-  - `sprites.ts` (+ image files such as `player.png`, `habitat.png`...): the sprites.
-  - Put **your name in a comment at the top of each file** (the rules require crediting the human author).
-- Claude does not edit anything inside `src/art/`.
+Full step-by-step instructions (including the loader code) are in **`docs/team/johnae-coins-and-art.md`**, Parts B and C.
 
-## What is a placeholder right now (all in `src/game/Game.ts`, search for `TODO-ART`)
-| What | Placeholder | Size in game pixels |
-|---|---|---|
-| Moon/Mars colors | the `PALETTE` object at the top of Game.ts | n/a |
-| Ground and ledge tiles | flat colored squares | 8 x 8 |
-| Player | white rectangle | about 5 x 10 |
-| Shelters (habitat, storm shelter, airlock) | colored boxes with a dark inside | habitat 48 x 32, storm shelter 64 x 40, airlock 32 x 32 |
-| Solar pads (Mars) | thin dark-blue bar | 24 x 3 |
-| Coins | small yellow square | about 8 x 8 cell |
+## Exact files (all in `src/art/`, PNG with transparent background, 1 art pixel = 1 game pixel)
+| File | Size (px) |
+|---|---|
+| `palettes.ts` | exports `PALETTES = { mars: {sky, ground, ledge}, moon: {...} }` (hex colors) |
+| `sprites.ts` | exports `SPRITES: Record<string, string>` of the imported PNGs |
+| `player.png` | 8 x 12 (hitbox is 5 x 10, feet at the bottom) |
+| `habitat.png` | 48 x 32 |
+| `storm-shelter.png` | 64 x 40 |
+| `airlock.png` | 32 x 32 |
+| `solar-pad.png` | 24 x 8 |
+| `coin.png` | 8 x 8 |
+| `ground-mars.png`, `ground-moon.png`, `ledge-mars.png`, `ledge-moon.png` | 8 x 8 each (optional) |
 
-The whole screen is 384 x 216 game pixels and gets scaled up by a whole number, so draw small and crisp.
-The thin **blue bars on Mars are the solar pads** and the blue-grey box is the habitat; both are placeholders.
+Put the artist's name in a comment at the top of `palettes.ts` and `sprites.ts`.
+The screen is 384 x 216 game pixels, scaled up by a whole number, so draw small and crisp.
 
-## Hooking art in (not built yet)
-Right now dropping files in `src/art/` changes nothing: the game has no sprite loader yet. Once the team says
-go, Claude writes the loader/renderer (allowed) so Game.ts draws your images instead of the rectangles.
+## What the placeholders are now (`src/game/Game.ts`, search `TODO-ART`)
+Flat colored rectangles: tiles (8 x 8), player (white 5 x 10), shelters (colored boxes), solar pads (the thin dark-blue bar on Mars), coins (small yellow squares).
+
+## How the game finds your art
+A small loader (`src/game/spriteLoader.ts`, written in Johnae's guide, Part C) draws your PNGs when they exist and keeps drawing the rectangles when a picture is missing, so the game never breaks while art is in progress.

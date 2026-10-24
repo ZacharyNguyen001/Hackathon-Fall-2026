@@ -1,10 +1,13 @@
 # Storm Shelter (GeauxHack 2026, "Life in Space")
 
-A browser 2D platformer in the style of Roblox "Natural Disaster Survival", set on the Moon and Mars.
+A browser 2D platformer in the style of "Natural Disaster Survival", set on the Moon and Mars.
 Every round you get 20 seconds to explore, a voiced warning plays, then a radiation storm hits. Reach the
 right shelter before your dose hits the limit. Doses and facts are real or clearly labeled as game values.
 
 Run it: `npm install` then `npm run dev` (open the printed address). Tests and typecheck: `npm run validate`.
+
+## Team guides
+Each teammate has a step-by-step guide in [`docs/team/`](docs/team/00-START-HERE.md): start with `00-START-HERE.md`, then your own file (Jaydon: NOAA + ElevenLabs, Garri: dust storm + demo script, Zach: sound effects, Johnae: saved coins + art).
 
 ## Rules we follow
 - **External APIs (max 2):** NOAA SWPC (space-weather data) and ElevenLabs (voice). Nothing else, and no backend.

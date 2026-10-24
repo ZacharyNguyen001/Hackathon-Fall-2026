@@ -12,3 +12,4 @@
 | 2026-10-24 11:38 | src/game/Game.ts, src/Play.tsx | Canvas game loop, input, placeholder-rect rendering (TODO-ART), HUD, results card | TBD |
 | 2026-10-24 11:38 | docs/*.md, README.md | Docs and API-decision note | TBD |
 | 2026-10-24 11:44 | package.json, vite.config.ts, tsconfig.json, index.html, src/main.tsx, src/Play.tsx | Moved the app to the repo root as a plain Vite+React+TS project; removed the DeepSpace scaffold | TBD |
+| 2026-10-24 13:02 | docs/team/*.md, docs/ART_GUIDE.md, README.md | Wrote beginner step-by-step guides for each teammate (docs only, no game code) | TBD |
