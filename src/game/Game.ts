@@ -129,7 +129,7 @@ export class Game {
     const move = (this.keys.has('ArrowRight') || this.keys.has('KeyD') ? 1 : 0) - (this.keys.has('ArrowLeft') || this.keys.has('KeyA') ? 1 : 0)
     const jump = this.keys.has('Space') || this.keys.has('ArrowUp') || this.keys.has('KeyW')
     const wasOnGround = this.player.onGround
-    if(jump && !wasOnGround)
+    if(jump && wasOnGround)
     {
         playSfx('jump', 0.7)
     }
@@ -139,7 +139,11 @@ export class Game {
     const cx = this.player.x + PLAYER_W / 2, cy = this.player.y + PLAYER_H / 2
     for (const c of this.map.coins) {
       if (this.got.has(c.id)) continue
-      if (Math.hypot(cx - (c.tx * TILE_PX + 4), cy - (c.ty * TILE_PX + 4)) < COIN_RADIUS_PX + 3) this.got.add(c.id)
+      if (Math.hypot(cx - (c.tx * TILE_PX + 4), cy - (c.ty * TILE_PX + 4)) < COIN_RADIUS_PX + 3) 
+        {
+          this.got.add(c.id)
+          playSfx('coin')
+        }
     }
     // Which shelter (if any) is the player's center in? Use the best-shielding one.
     this.shield = SHIELD_OUTSIDE
