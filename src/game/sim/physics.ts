@@ -1,3 +1,6 @@
+/**
+ * FILE PURPOSE: moving the player. Each step: apply left/right speed, jump, gravity; then move sideways and up/down SEPARATELY and push the player out of any solid tile (AABB collision = a rectangle vs the tile grid).
+ */
 import { MAP_H, MAP_W, PLAYER_H, PLAYER_W, RUN_SPEED_PX, TILE_PX, JUMP_VELOCITY_PX } from '../tunables'
 import { isSolid } from '../world/tiles'
 

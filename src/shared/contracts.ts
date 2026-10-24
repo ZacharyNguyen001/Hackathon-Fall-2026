@@ -1,3 +1,6 @@
+/**
+ * FILE PURPOSE: the shared 'shapes' of data (TypeScript types) that different files agree on, e.g. what a RoundPlan or a GameMap looks like. Types vanish at build time; they only help catch mistakes.
+ */
 /** Handoff types shared by the game, UI and (later) audio/data code. */
 export type Body = 'moon' | 'mars'
 export type DisasterKind = 'solar_storm' | 'dust_storm' | 'co2_leak' | 'blackout'

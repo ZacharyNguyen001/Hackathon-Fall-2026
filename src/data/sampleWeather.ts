@@ -1,3 +1,6 @@
+/**
+ * FILE PURPOSE: builds a SpaceWeather reading from the REAL NOAA responses we saved in src/data/noaa-sample/. It is the offline fallback and is always labeled 'sample' in the HUD.
+ */
 import type { SpaceWeather } from '../shared/contracts'
 import scales from './noaa-sample/noaa-scales.json'
 import protons from './noaa-sample/integral-protons-10mev.json'

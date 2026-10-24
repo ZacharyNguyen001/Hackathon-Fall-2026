@@ -1,3 +1,6 @@
+/**
+ * FILE PURPOSE: decides what the next round is: Mars or Moon (they alternate), and the storm level. If NOAA says the real sun is quiet (S0) the round is ALWAYS labeled a DRILL; only a real S1+ reading is called LIVE.
+ */
 import type { Body, RoundPlan, SpaceWeather } from '../../shared/contracts'
 import { DRILL_LEVELS } from '../tunables'
 import { seedFor } from '../world/rng'

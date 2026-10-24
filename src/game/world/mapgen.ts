@@ -1,3 +1,7 @@
+/**
+ * FILE PURPOSE: builds one level from a seed. Steps: hills (smooth random heights) -> a crater -> flatten spots for the shelters (a near habitat, a far storm shelter, a Mars airlock) -> floating ledges -> solar pads (Mars) -> coins.
+ * Then it CHECKS the level can be finished (reachability.ts). If not, it tries seed+1, up to 20 times, then uses a plain flat level. Same seed = same level.
+ */
 import type { Body, GameMap, Shelter } from '../../shared/contracts'
 import {
   GROUND_MAX, GROUND_MIN, HEIGHT_CTRL_SPACING, MAP_H, MAP_W, MAX_MAP_RETRIES,

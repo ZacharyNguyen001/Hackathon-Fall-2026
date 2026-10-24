@@ -1,3 +1,6 @@
+/**
+ * FILE PURPOSE: automatic checks for dose, coins, round timer, round planning and physics. Run with `npm test`.
+ */
 import { describe, expect, it } from 'vitest'
 import { doseRate, isEvac, ramp } from './dose'
 import { computeCoins } from './coins'

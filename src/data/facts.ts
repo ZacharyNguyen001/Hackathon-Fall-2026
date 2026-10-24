@@ -1,3 +1,6 @@
+/**
+ * FILE PURPOSE: the only real-world facts the game may show (each with a source and a status: real / derived / proposed). The results card picks one. See docs/DATA_SOURCES.md.
+ */
 /** Real facts only (CLAUDE.md section 6). Fact cards may use nothing else. */
 export interface Fact { id: string; text: string; source: string; status: 'real' | 'derived' | 'proposed' }
 

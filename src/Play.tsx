@@ -1,4 +1,9 @@
 /**
+ * FILE PURPOSE: the game PAGE (React). It owns everything around the game: the canvas element, the 'click to start' screen, the red warning banner, the results card, and the mute button.
+ * React does NOT run the game itself. It creates a `Game` (src/game/Game.ts) and gets told only when something changes (phase, banner, results), not 60 times a second.
+ * It also picks the biggest whole-number zoom that fits the window so the pixels stay sharp.
+ */
+/**
  * The game page. No backend and no network calls yet.
  * React owns the menus/overlay; the Game class owns the canvas and runs outside React.
  */

@@ -1,3 +1,6 @@
+/**
+ * FILE PURPOSE: reads NOAA's JSON safely. NOAA sometimes sends missing or odd values, so each parser returns null instead of crashing when the data looks wrong.
+ */
 import type { SpaceWeather } from '../shared/contracts'
 
 /** Parse noaa-scales.json. Returns S-level + time, or null if the shape is wrong. */

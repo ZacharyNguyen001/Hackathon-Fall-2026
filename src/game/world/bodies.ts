@@ -1,3 +1,6 @@
+/**
+ * FILE PURPOSE: Moon vs Mars physics. Gravity keeps the REAL ratio between the two (1.62 vs 3.71) but is scaled for fun. From gravity we work out how many tiles high a jump reaches, so the map generator never builds a step the player can't climb.
+ */
 import { BASE_G_PX, JUMP_VELOCITY_PX, MARS_G_REAL, MOON_G_REAL, STEP_SAFETY, TILE_PX } from '../tunables'
 import type { Body } from '../../shared/contracts'
 

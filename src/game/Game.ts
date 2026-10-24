@@ -1,3 +1,10 @@
+/**
+ * FILE PURPOSE: the heart of the game. One `Game` object owns the canvas and runs a loop 60 times a second:
+ *   1. read the keyboard   2. move the player (physics)   3. advance the round timer (EXPLORE -> WARNING -> DISASTER -> RESULTS)
+ *   4. apply radiation dose during the disaster   5. draw the map, player, shelters and HUD.
+ * It talks to React (Play.tsx) through the `onUi` callback, only when something changes.
+ * All drawing here is flat placeholder rectangles marked TODO-ART (human); real art replaces them (see docs/ART_GUIDE.md).
+ */
 import type { GameMap, Phase, RoundPlan, RoundReport, SpaceWeather } from '../shared/contracts'
 import {
   DISASTER_S, LOGICAL_H, LOGICAL_W, MAP_H, MAP_W, PLAYER_H, PLAYER_W, SHIELD_OUTSIDE, SPE_LIMIT_MSV,

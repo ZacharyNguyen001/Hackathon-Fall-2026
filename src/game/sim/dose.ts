@@ -1,3 +1,6 @@
+/**
+ * FILE PURPOSE: the radiation math. `ramp` is how strong the storm is over time (ramps up, holds, eases). `doseRate` = peak rate x ramp x shield factor (outside 1.0, habitat 0.5, storm shelter 0.1). `isEvac` is true at 250 mSv.
+ */
 import { DOSE_SCALE, EASE_S, HOLD_S, PEAK_RATE_MSV_PER_S, RAMP_UP_S, SPE_LIMIT_MSV } from '../tunables'
 
 /** Storm intensity 0..1 at `t` seconds into the disaster: ramps up, holds, eases. */

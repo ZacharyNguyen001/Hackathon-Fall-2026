@@ -1,3 +1,6 @@
+/**
+ * FILE PURPOSE: automatic checks that the NOAA parsers read the saved real data and survive bad input. Run with `npm test`.
+ */
 import { describe, expect, it } from 'vitest'
 import { parseProtonFlux, parseScales } from './noaa'
 import { sampleWeather } from './sampleWeather'

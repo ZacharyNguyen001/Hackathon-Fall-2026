@@ -1,3 +1,6 @@
+/**
+ * FILE PURPOSE: the round timer. It only knows the phase order (INTERMISSION -> EXPLORE -> WARNING -> DISASTER -> RESULTS -> repeat) and how long each lasts. It has no drawing or sound; Game.ts asks it 'did a new phase start?'.
+ */
 import type { Phase } from '../../shared/contracts'
 import { DISASTER_S, EXPLORE_S, INTERMISSION_S, RESULTS_S, WARNING_S } from '../tunables'
 

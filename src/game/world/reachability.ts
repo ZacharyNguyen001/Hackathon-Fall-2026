@@ -1,3 +1,6 @@
+/**
+ * FILE PURPOSE: answers 'can the player get from spawn to every shelter?'. It does a breadth-first search (BFS): start at spawn, repeatedly visit every spot you can walk or jump to from the spots you already found, and see whether the shelters are among them.
+ */
 import { MAP_H, MAP_W } from '../tunables'
 import { isSolid } from './tiles'
 

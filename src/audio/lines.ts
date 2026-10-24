@@ -1,3 +1,6 @@
+/**
+ * FILE PURPOSE: the exact sentences the mission-control voice and captions say (warning, evac, all-clear). Later the bake script uses these same sentences to make ElevenLabs audio files.
+ */
 import type { RoundPlan } from '../shared/contracts'
 
 /** Text for the mission-control voice and the on-screen caption (whitelisted templates). */

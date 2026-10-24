@@ -1,3 +1,6 @@
+/**
+ * FILE PURPOSE: automatic checks for the random generator, Moon/Mars jump heights and the map generator (same seed = same map, every map is finishable). Run with `npm test`.
+ */
 import { describe, expect, it } from 'vitest'
 import { fallbackMap, generateMap, mapIsReachable } from './mapgen'
 import { mulberry32, seedFor } from './rng'

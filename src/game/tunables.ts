@@ -1,4 +1,8 @@
 /**
+ * FILE PURPOSE: every number that tunes the game, in one place. Each is tagged GAME VALUE (we chose it for fun) or REAL: source (a real figure).
+ * If you want the game easier or harder, change it here. No other file should hide magic numbers.
+ */
+/**
  * Every game number lives here. Each is tagged:
  *   GAME VALUE  = tuned for fun, not real
  *   REAL: <src> = a real figure (source in docs/DATA_SOURCES.md)

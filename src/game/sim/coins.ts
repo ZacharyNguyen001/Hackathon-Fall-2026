@@ -1,3 +1,6 @@
+/**
+ * FILE PURPOSE: how many coins a round is worth: +1 per second alive during warning+disaster, +10 for surviving, +5 per pickup, with caps. A pure function so it is easy to test.
+ */
 import { DISASTER_S, MAX_PICKUPS_PER_MAP, PICKUP_COINS, SURVIVAL_BONUS, WARNING_S } from '../tunables'
 
 /** +1 per second alive in WARNING+DISASTER, +10 if survived, +5 per pickup (capped). */
