@@ -19,7 +19,7 @@ Sound can't travel through empty space, so the Moon has **no wind or ambient noi
 | `klaxon.mp3` | when the warning fires |
 | `coin.mp3` | coin pickup |
 | `jump.mp3` | player jumps |
-| `airlock.mp3` | optional, entering the airlock (dust round) |
+| `airlock.mp3` | optional, entering the airlock |
 | `mars-wind-loop.mp3` | looping ambience on Mars rounds |
 | `moon-suit-hum-loop.mp3` | looping quiet hum on Moon rounds |
 
@@ -132,7 +132,7 @@ Add `import { loadSfx, playSfx, startLoop, stopLoop, setSfxMuted } from '../audi
    if (p === 'EXPLORE') startLoop(this.plan.body === 'mars' ? 'mars-wind-loop' : 'moon-suit-hum-loop')
    if (p === 'RESULTS') stopLoop()
    ```
-9. Airlock sound (optional): when `this.shield` changes into an airlock; ask Garri where that code lands, since both of you edit nearby lines. Do it last.
+9. Airlock sound (optional): when `this.shield` changes into an airlock, play `airlock`. Do it last.
 
 ### Done when
 - Each sound plays at the right moment. Mars rounds have wind, Moon rounds have only the suit hum.

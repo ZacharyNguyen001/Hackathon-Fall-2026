@@ -55,7 +55,7 @@ The whole world is one screen. Logical resolution **384 × 216** (16:9), **8 px 
 
 ### Disasters
 
-**MVP (must ship): A and B. Stretch: C, then D.**
+**MVP (must ship): A (the dust storm B was retired). Stretch: C, then D.**
 
 **A. Solar particle event / radiation storm** (Moon or Mars) — uses live NOAA data.
 - Level: if the live NOAA S-scale is ≥ 1 → **LIVE STORM** at that level. If it's S0 (the usual case) → **DRILL** at a level that ramps by round (S2 → S3 → S4 → S5), and the HUD says "DRILL — real sun is quiet right now (S0, flux X pfu)". Never present a drill as live.
@@ -67,14 +67,7 @@ The whole world is one screen. Logical resolution **384 × 216** (16:9), **8 px 
 - EVAC'D when round dose ≥ **250 mSv** (real: crew design limit for a single SPE is under 250 mSv).
 - Show a "career dose" across rounds vs the **proposed** 600 mSv NASA career limit (always say "proposed").
 
-**B. Mars dust storm** (Mars only).
-- Optical depth τ ramps from ~0.5 to ~5 during the disaster (game values).
-- Visibility radius shrinks with τ (dark overlay with a circular cutout around the player).
-- Sunlight reaching solar pads ≈ `exp(−τ)` (labeled "direct-beam approximation" in UI/debrief).
-- Suit power: drains while outside; recharges at solar pads at `PAD_RATE × exp(−τ)`, so pads become useless as the storm builds. Inside the battery-backed habitat airlock = safe.
-- Wind: horizontal push that ramps with τ, with random gusts (seeded).
-- EVAC'D when suit power hits 0.
-- Debrief fact: Opportunity's array output fell from ~645 Wh to ~22 Wh per sol in the 2018 storm and the rover went silent.
+**B. Mars dust storm — RETIRED (team change).** We cut it to keep the scope finishable; Mars rounds are solar storms like the Moon's. Mars keeps its **airlock**, which simply acts as an extra habitat (0.5 shielding). Do not mention a dust storm as a feature in the pitch.
 
 **C. (Stretch) Habitat CO₂ scrubber failure** — interior map. CO₂ (mmHg) rises; alarm tiers at **2 / 4 / 5.3 mmHg**. Sprinting raises your CO₂ output (real: ~5.2 g/min exercising vs ~0.7 g/min at rest). Survive by carrying the spare part to the scrubber or reaching the backup module.
 
@@ -84,7 +77,7 @@ The whole world is one screen. Logical resolution **384 × 216** (16:9), **8 px 
 
 | | Moon | Mars |
 |---|---|---|
-| Disasters | A (C stretch) | A, B (C, D stretch) |
+| Disasters | A (C stretch) | A (C, D stretch) |
 | Gravity | 1.62 m/s² | 3.71 m/s² |
 | Game gravity | `BASE_G × 1.62/3.71` | `BASE_G` |
 | Palette | human-chosen grays | human-chosen rust/ochre |
@@ -120,7 +113,7 @@ src/
     Game.ts                       # loop, input, round flow, rendering, HUD
     tunables.ts                   # EVERY game value, commented "GAME VALUE" or "REAL: source"
     world/    rng.ts mapgen.ts reachability.ts tiles.ts bodies.ts
-    sim/      roundMachine.ts planRound.ts physics.ts dose.ts coins.ts   (dust.ts next)
+    sim/      roundMachine.ts planRound.ts physics.ts dose.ts coins.ts
   data/
     facts.ts                      # cited real numbers (§6) used by fact cards
     noaa.ts                       # NOAA parsing (pure functions, defensive)
@@ -130,16 +123,18 @@ src/
     lines.ts                      # voice line text templates
   shared/   contracts.ts hash.ts  # shared types, tiny hash
   art/                            # HUMAN-MADE ONLY: sprites.ts, palettes.ts (author name in header)
-public/audio/fallback/*.mp3       # pre-baked ElevenLabs clips + SFX (to come)
-scripts/bake-audio.ts             # local script: generates fallback clips with ElevenLabs (to come)
-docs/ AI_USAGE.md EXPLAIN.md DATA_SOURCES.md DEMO_SCRIPT.md
+public/audio/voice/*.mp3          # pre-baked ElevenLabs voice clips
+public/audio/sfx/*.mp3            # sound effects
+scripts/bake-audio.ts             # local script: generates the voice clips with ElevenLabs
+scripts/bake-sfx.ts               # local script: generates the sound effects with ElevenLabs
+docs/ AI_USAGE.md EXPLAIN.md DATA_SOURCES.md DEMO_RUN_SHEET.md
 ```
 
 ### Handoff contracts (agree on these first, stub them, then everyone works in parallel)
 
 ```ts
 export type Body = 'moon' | 'mars';
-export type DisasterKind = 'solar_storm' | 'dust_storm' | 'co2_leak' | 'blackout';
+export type DisasterKind = 'solar_storm' | 'co2_leak' | 'blackout';
 
 export interface SpaceWeather {            // from the browser's NOAA fetch, or the saved sample
   sLevel: 0 | 1 | 2 | 3 | 4 | 5;           // NOAA S-scale, current
@@ -152,7 +147,7 @@ export interface SpaceWeather {            // from the browser's NOAA fetch, or 
 
 export interface RoundPlan {
   roundId: string; roundNumber: number; body: Body; disaster: DisasterKind;
-  level: number;          // S-level for solar, intensity 1-3 for dust
+  level: number;          // S-level for solar
   isDrill: boolean;       // true unless driven by a live NOAA S>=1
   seed: number;
 }
@@ -162,7 +157,7 @@ export interface Shelter { id: string; tx: number; ty: number; tw: number; th: n
 
 export interface GameMap { widthTiles: 48; heightTiles: 27; tiles: Uint8Array;
   spawn: { tx: number; ty: number }; shelters: Shelter[];
-  pads: { tx: number; ty: number }[]; coins: { tx: number; ty: number }[]; }
+  coins: { tx: number; ty: number }[]; }
 
 export interface PlayerSnapshot { x: number; y: number; insideShelterId: string | null;
   alive: boolean; doseMSv: number; suitPower: number; coinsThisRound: number; }
@@ -173,7 +168,7 @@ export interface RoundReport {            // built when a round ends (feeds comp
 }
 
 export type VoiceLineId =
-  | 'solar_warning' | 'dust_warning' | 'all_clear' | 'evac' | 'briefing' | 'drill_notice';
+  | 'solar_warning' | 'all_clear' | 'evac' | 'briefing' | 'drill_notice';
 export interface VoiceRequest { lineId: VoiceLineId; vars: Record<string, string | number>; }
 export interface VoiceResponse { url: string; cached: boolean; caption: string; }
 ```
@@ -203,7 +198,7 @@ A backend-as-a-service counts as an API, and we may use only two (NOAA and Eleve
 - NOAA S-scale definition (for HUD + debrief): S1 starts at 10 pfu of ≥10 MeV protons, each level is 10× higher (S2 100, S3 1,000, S4 10,000, S5 100,000). At S3+, EVA astronauts should avoid radiation exposure → our "go to shelter" rule.
 
 ### Map generator requirements
-- Heightmap terrain across 48 columns (smoothed value noise / midpoint displacement), craters, a few floating ledges, 2–3 shelters (at least one near and one far from spawn), solar pads on Mars, 3–6 coin pickups.
+- Heightmap terrain across 48 columns (smoothed value noise / midpoint displacement), craters, a few floating ledges, 2–3 shelters (at least one near and one far from spawn), a Mars airlock, 3–6 coin pickups.
 - **Reachability guarantee:** max step height < the body's jump height in tiles; run a BFS from spawn over walkable tiles and confirm every shelter (and the airlock on Mars) is reachable. If not, retry with `seed + 1` up to 20 times, then fall back to a known-good flat-ish layout.
 - Generation must be deterministic for a given seed and run in < 5 ms.
 
@@ -220,7 +215,7 @@ all-clear, EVAC callout, and the live space-weather briefing generated from real
 - **Cache:** the bake script skips clips that already exist, so re-running it does not spend credits.
 - **No live generation.** With no server there is no safe place for the key, so the game plays baked clips only. If the team wants live generation, a proxy would be a third-party host: ask first.
 - **Fallback chain (client, `src/audio/voice.ts`):** pre-baked mp3 in `public/audio/fallback/` → browser `speechSynthesis` → caption only. The game must never wait on audio: the banner and caption appear at t = 20 s regardless.
-- **Pre-bake script** (`scripts/bake-audio.ts`, run locally with the key in a local, git-ignored env var): generates every fixed line (each S-level warning, dust warning, all-clear, EVAC, drill notice) and the SFX into `public/audio/fallback/`. Commit the mp3s.
+- **Pre-bake script** (`scripts/bake-audio.ts`, run locally with the key in a local, git-ignored env var): generates every fixed line (each S-level warning, all-clear, EVAC, drill notice) into `public/audio/voice/`; `scripts/bake-sfx.ts` makes the sound effects in `public/audio/sfx/`. Commit the mp3s.
 - **Briefing:** the lobby line is built from the current NOAA numbers and spoken with `speechSynthesis` (live numbers cannot be baked); the fixed lines use baked ElevenLabs audio.
 - Use premade/library voices only. Don't clone or imitate a real person's voice.
 - Stretch: multilingual warnings (same templates, translated text, multilingual model).
@@ -286,17 +281,17 @@ respond well to honest uncertainty — it is part of the pitch, not a weakness.
 1. Canvas engine: fixed-timestep loop, input, tile collision, player with jump, integer-scaled pixel render.
 2. Seeded map generator with reachability check; Moon and Mars palettes/gravity.
 3. Round state machine with all phases and timers.
-4. Disaster A (solar storm) with live/drill logic and dose model; Disaster B (dust storm).
+4. Disaster A (solar storm) with live/drill logic and dose model (the dust storm was retired).
 5. Live NOAA fetch in the browser → live panel; offline sample fallback.
 6. ElevenLabs: pre-baked voice and SFX pack, speechSynthesis fallback, captions.
 7. Coins computed by `computeCoins`, kept locally; results screen shows them.
 8. Results screen with real-data fact cards and real-vs-tuned labels.
-9. Human-made sprites in (player, shelters, pads, coin); placeholders gone.
+9. Human-made sprites in (player, shelters, coin); placeholders gone.
 10. Static build published from committed code; README/AI_USAGE/DATA_SOURCES complete.
 
 **Stretch, in order:** (S1) CO₂ round · (S3) coin shop for suit palettes · (S4) blackout round · (S5) multilingual voice · (S6) touch controls.
 
-**If behind, cut in this order:** S-anything → dust storm visuals polish → Moon (Mars only) → terrain variety (hills only) → career dose display.
+**If behind, cut in this order:** S-anything → Moon (Mars only) → terrain variety (hills only) → career dose display.
 **Never cut:** live NOAA (with sample fallback), ElevenLabs voice, honest labeling. Those are what the judging panels are scoring.
 
 ---
@@ -306,7 +301,7 @@ respond well to honest uncertainty — it is part of the pitch, not a weakness.
 | # | Role | Owns | Owner |
 |---|---|---|---|
 | 1 | Game | engine, physics, map gen + reachability, round machine, coin pickups | ____ |
-| 2 | Hazards + data | NOAA fetch/parser/sample, dose model, dust model, `facts.ts`, `tunables.ts` | ____ |
+| 2 | Hazards + data | NOAA fetch/parser/sample, dose model, `facts.ts`, `tunables.ts` | ____ |
 | 3 | Voice + audio | `lines.ts`, bake script, SFX, `voice.ts` fallback chain, local coin storage | ____ |
 | 4 | Art, HUD, pitch | **all sprites (hand-made)**, palettes, HUD/menus/debrief UI, voice line writing + voice choice, README, Devpost, demo script, slides | ____ |
 
@@ -321,7 +316,7 @@ Role 4 also keeps the README honest: every AI-assisted file listed, both externa
 | Sat, ASAP | Get the README template link. Each member claims the ElevenLabs Creator coupon (ElevenLabs Discord → coupon-codes, same email as GDG registration). Public GitHub repo created, all 4 added. |
 | Sat 12 PM | Player runs and jumps on a generated map. Contracts (§2) stubbed. |
 | Sat 4 PM | Full round loop with solar storm + dose + coins locally. Bake script produces real ElevenLabs audio. |
-| Sat 8 PM | Dust storm round. Fallback audio baked. Human sprites in. (Optional: 8 PM Copilot presentation workshop.) |
+| Sat 8 PM | Fallback audio baked. Human sprites in. (Optional: 8 PM Copilot presentation workshop.) |
 | **Sat 11:59 PM** | **Select ElevenLabs on Devpost** (sponsor deadline; also team/bracket change deadline — the rules doc says "Saturday, October 25th"; Saturday is the 24th, so treat it as tonight). MVP feature freeze. README + Devpost draft exist. |
 | Sun 9:00 AM | Book a presentation slot the moment booking opens (first-come). Fresh-clone test of the public repo, build and publish from it. |
 | Sun 11:00 AM | Submit on Devpost (title, description with team name, public repo link, ElevenLabs prize, public/private presentation choice). Tag `submission`. |
@@ -335,7 +330,7 @@ Role 4 also keeps the README honest: every AI-assisted file listed, both externa
 - Start every session by reading this file. Check §0 before every change.
 - Prefer small vertical slices that run end-to-end over large half-finished systems. After each slice: run typecheck/lint, run tests for pure logic, update `docs/AI_USAGE.md` and `docs/EXPLAIN.md`, and make a small commit with a clear message.
 - Put every game value in `src/game/tunables.ts` with a `// GAME VALUE` or `// REAL: <source>` comment. No magic numbers elsewhere.
-- Unit-test the pure functions: PRNG determinism, map reachability, dose math, dust power, coin calculation, NOAA parser (including malformed input). Tests use Vitest (`npm test`).
+- Unit-test the pure functions: PRNG determinism, map reachability, dose math, coin calculation, NOAA parser (including malformed input). Tests use Vitest (`npm test`).
 - Never add a dependency or an external service without saying so and getting a yes.
 - When an ElevenLabs detail is uncertain, read their API docs — do not invent request shapes.
 - Never print keys and never commit `.env*`.

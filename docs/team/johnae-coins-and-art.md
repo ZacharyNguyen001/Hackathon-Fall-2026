@@ -97,8 +97,7 @@ Save as **PNG with a transparent background**. Use these **exact file names** in
 | `player.png` | 8 x 12 | The astronaut. The real hitbox is 5 x 10, so draw the feet at the very bottom, centered. |
 | `habitat.png` | 48 x 32 | Habitat module (aluminum walls, 50% protection) |
 | `storm-shelter.png` | 64 x 40 | Storm shelter (water-walled, the best protection) |
-| `airlock.png` | 32 x 32 | Mars airlock (the safe place in a dust storm) |
-| `solar-pad.png` | 24 x 8 | A solar pad lying on the ground (draw the pad at the bottom) |
+| `airlock.png` | 32 x 32 | Mars airlock (a third shelter, 50% protection like the habitat) |
 | `coin.png` | 8 x 8 | Coin pickup |
 | `ground-mars.png` | 8 x 8 | Mars ground tile (optional) |
 | `ground-moon.png` | 8 x 8 | Moon ground tile (optional) |
@@ -125,13 +124,12 @@ import player from './player.png'
 import habitat from './habitat.png'
 import stormShelter from './storm-shelter.png'
 import airlock from './airlock.png'
-import solarPad from './solar-pad.png'
 import coin from './coin.png'
 // import groundMars from './ground-mars.png'   <- uncomment when the file exists, and add it below
 
-export const SPRITES: Record<string, string> = { player, habitat, stormShelter, airlock, solarPad, coin }
+export const SPRITES: Record<string, string> = { player, habitat, stormShelter, airlock, coin }
 ```
-(The name before the `=` of each import is the sprite's name used by the game: `player`, `habitat`, `stormShelter`, `airlock`, `solarPad`, `coin`, `groundMars`, `groundMoon`, `ledgeMars`, `ledgeMoon`.)
+(The name before the `=` of each import is the sprite's name used by the game: `player`, `habitat`, `stormShelter`, `airlock`, `coin`, `groundMars`, `groundMoon`, `ledgeMars`, `ledgeMoon`.)
 
 ## Part C. The loader (so the game draws your pictures) (about 2 hours)
 Do this on branch `johnae/art` after you have at least `player.png`. The rule is: **if a picture is missing or not loaded yet, the game keeps drawing the old rectangle**, so nothing ever breaks.
@@ -168,7 +166,6 @@ Pattern for every item: "if there is a picture, draw it, else draw the old recta
   if (img) { c.drawImage(img, s.tx * TILE_PX, s.ty * TILE_PX); continue }
   // ...the old rectangle code stays below as the fallback
   ```
-- **Pads:** `sprite('solarPad')` drawn at `(p.tx * TILE_PX, p.ty * TILE_PX)`.
 - **Coins:** `sprite('coin')` drawn at `(k.tx * TILE_PX, k.ty * TILE_PX)`.
 - **Player:** `sprite('player')` drawn at `(Math.round(this.player.x) - 1, Math.round(this.player.y) - 2)` (the picture is a bit bigger than the hitbox). When EVAC'D set `c.globalAlpha = 0.4` before drawing and `c.globalAlpha = 1` after.
 - **Tiles:** pick `sprite(t === 1 ? (body === 'mars' ? 'groundMars' : 'groundMoon') : (body === 'mars' ? 'ledgeMars' : 'ledgeMoon'))`, else use the palette color.
@@ -176,7 +173,6 @@ Pattern for every item: "if there is a picture, draw it, else draw the old recta
 
 ### Step 4: finish
 - Update `docs/ART_GUIDE.md` if you changed any size, and add "Art by <your name>, hand-drawn in <program>" to `README.md`.
-- Tell Garri that the dust overlay should still look fine over your art (it is drawn after the sprites).
 
 ### Done when
 - Your sprites show in the game; temporarily rename one PNG and the build tells you (import error), and a sprite that hasn't loaded yet falls back to its rectangle.
