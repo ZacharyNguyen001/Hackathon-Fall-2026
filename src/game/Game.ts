@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 /**
  * FILE PURPOSE: the heart of the game. One `Game` object owns the canvas and runs a loop 60 times a second:
  *   1. read the keyboard   2. move the player (physics)   3. advance the round timer (EXPLORE -> WARNING -> DISASTER -> RESULTS)
