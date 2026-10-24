@@ -1,7 +1,7 @@
 # How it works (plain English)
 
 ## Slice 1: single-player round on a fixed Mars map
-- `src/pages/play.tsx` shows the canvas and the menus. A click starts the game (browsers need a click before they allow audio).
+- `src/Play.tsx` shows the canvas and the menus. A click starts the game (browsers need a click before they allow audio).
 - `src/game/Game.ts` owns the canvas. It runs a 60-steps-per-second loop, reads the keyboard, moves the player, draws everything.
 - Each round: `planRound` picks Mars/Moon and a drill level -> `generateMap` builds terrain from a seed -> the round timer (`RoundMachine`) moves through EXPLORE (20 s) -> WARNING (12 s) -> DISASTER (40 s) -> RESULTS (8 s).
 - At the start of WARNING a banner and a spoken line appear (browser speech for now).

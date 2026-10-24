@@ -1,12 +1,12 @@
 /**
- * The game page. Top-level (static) page: no DeepSpace providers, no network calls.
+ * The game page. No backend and no network calls yet.
  * React owns the menus/overlay; the Game class owns the canvas and runs outside React.
  */
 import { useEffect, useRef, useState } from 'react'
 import '@fontsource-variable/bitcount'
-import { Game, type UiState } from '../game/Game'
-import { sampleWeather } from '../data/sampleWeather'
-import { LOGICAL_H, LOGICAL_W } from '../game/tunables'
+import { Game, type UiState } from './game/Game'
+import { sampleWeather } from './data/sampleWeather'
+import { LOGICAL_H, LOGICAL_W } from './game/tunables'
 
 export default function Play() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
