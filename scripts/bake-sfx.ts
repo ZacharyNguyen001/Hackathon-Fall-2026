@@ -12,7 +12,7 @@ const SOUNDS = [
   { file: 'coin', text: 'bright retro 8-bit coin pickup blip', seconds: 0.5, loop: false },
   { file: 'jump', text: 'soft retro 8-bit jump boing', seconds: 0.5, loop: false },
   { file: 'mars-wind-loop', text: 'thin low wind blowing over a quiet dusty desert, seamless', seconds: 10, loop: true },
-  { file: 'moon-suit-hum-loop', text: 'very quiet electrical hum inside a spacesuit helmet, seamless', seconds: 10, loop: true },
+  { file: 'moon-suit-hum-loop', text: 'quiet ambient electrical hum inside a spacesuit helmet, seamless', seconds: 10, loop: true },
 ]
 
 const OUT = 'public/audio/sfx'
