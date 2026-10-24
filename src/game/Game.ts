@@ -20,6 +20,7 @@ import { computeCoins } from './sim/coins'
 import { step, type Body2D } from './sim/physics'
 import { FACTS, type Fact } from '../data/facts'
 import { allClearLine, evacLine, warningLine } from '../audio/lines'
+import { loadSfx, playSfx, startLoop, stopLoop, setSfxMuted } from '../audio/sfx'
 
 export interface Results {
   survived: boolean; doseMSv: number; coins: number; pickups: number; level: number; isDrill: boolean; fact: Fact
@@ -62,6 +63,7 @@ export class Game {
 
   start() { // call from a click: unlocks audio
     this.audio = new AudioContext()
+    void loadSfx(this.audio)
     window.addEventListener('keydown', this.down)
     window.addEventListener('keyup', this.up)
     this.last = performance.now()
@@ -74,8 +76,10 @@ export class Game {
     window.removeEventListener('keyup', this.up)
     speechSynthesis.cancel()
     void this.audio?.close()
+    stopLoop()
   }
-  setMuted(m: boolean) { this.ui.muted = m; if (m) speechSynthesis.cancel(); this.push() }
+  setMuted(m: boolean) 
+  { this.ui.muted = m; if (m) speechSynthesis.cancel(); this.push(); setSfxMuted(m)}
 
   private down = (e: KeyboardEvent) => {
     if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) e.preventDefault()
@@ -123,6 +127,11 @@ export class Game {
   private movePlayer(dt: number) {
     const move = (this.keys.has('ArrowRight') || this.keys.has('KeyD') ? 1 : 0) - (this.keys.has('ArrowLeft') || this.keys.has('KeyA') ? 1 : 0)
     const jump = this.keys.has('Space') || this.keys.has('ArrowUp') || this.keys.has('KeyW')
+    const wasOnGround = this.player.onGround
+    if(jump && !wasOnGround)
+    {
+        playSfx('jump', 0.7)
+    }
     step(this.player, this.map.tiles, dt, move, jump, gameGravity(this.plan.body))
 
     // Pick up coins by overlap with the player's center.
@@ -161,8 +170,11 @@ export class Game {
       const line = warningLine(this.plan)
       this.ui.banner = line
       this.say(line)
+      playSfx('klaxon', 0.7)
     }
     if (p === 'DISASTER' && this.alive) this.ui.banner = this.ui.banner
+    if (p === 'EXPLORE') startLoop(this.plan.body === 'mars' ? 'mars-wind-loop' : 'moon-suit-hum-loop')
+    if (p === 'RESULTS') stopLoop()
     if (p === 'RESULTS') this.finishRound()
     this.push()
   }
@@ -192,6 +204,12 @@ export class Game {
     o.frequency.value = 1800; g.gain.value = 0.04
     o.connect(g); g.connect(this.audio.destination)
     o.start(); o.stop(this.audio.currentTime + 0.012)
+
+    if (this.ui.muted) 
+      return 
+    if(playSfx('geiger-click', 0.6)) 
+      return
+
   }
 
   // ---- rendering ----
