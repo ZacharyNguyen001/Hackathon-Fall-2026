@@ -9,7 +9,7 @@ if (!key) throw new Error('Missing ELEVENLABS_API_KEY in .env.bake.local')
 const SOUNDS = [
   { file: 'geiger-click', text: 'single short geiger counter click', seconds: 0.5, loop: false },
   { file: 'klaxon', text: 'space station emergency klaxon alarm, three short blasts', seconds: 3, loop: false },
-  { file: 'coin', text: 'bright retro 8-bit coin pickup blip', seconds: 0.5, loop: false },
+  { file: 'coin', text: 'quiet and soft retro 8-bit coin pickup blip', seconds: 0.5, loop: false },
   { file: 'jump', text: 'soft retro 8-bit jump boing', seconds: 0.5, loop: false },
   { file: 'mars-wind-loop', text: 'thin low wind blowing over a quiet dusty desert, seamless', seconds: 10, loop: true },
   { file: 'moon-suit-hum-loop', text: 'quiet ambient electrical hum inside a spacesuit helmet, seamless', seconds: 10, loop: true },
