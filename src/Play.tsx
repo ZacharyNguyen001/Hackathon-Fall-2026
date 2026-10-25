@@ -11,6 +11,7 @@ import { useEffect, useRef, useState } from 'react'
 import '@fontsource-variable/bitcount'
 import { Game, type UiState } from './game/Game'
 import { sampleWeather } from './data/sampleWeather'
+import { fetchLiveWeather } from './data/liveWeather'
 import { LOGICAL_H, LOGICAL_W } from './game/tunables'
 
 export default function Play() {
@@ -19,6 +20,8 @@ export default function Play() {
   const [started, setStarted] = useState(false)
   const [ui, setUi] = useState<UiState>({ phase: 'INTERMISSION', banner: null, results: null, muted: false })
   const [scale, setScale] = useState(2)
+  
+  const [weather, setWeather] = useState(sampleWeather())
 
   // Largest whole-number scale that fits the window (keeps pixels crisp).
   useEffect(() => {
@@ -30,9 +33,21 @@ export default function Play() {
 
   useEffect(() => () => gameRef.current?.stop(), [])
 
+  // weather simulation. called only every 5 min so we're nice to NOAA's API calls
+  useEffect(() => {
+    let stopped = false
+    const refresh = async () => {
+      const w = await fetchLiveWeather()
+      if (w && !stopped) { setWeather(w); gameRef.current?.setWeather(w) }
+    }
+    refresh()
+    const id = setInterval(refresh, 5 * 60 * 1000)
+    return () => { stopped = true; clearInterval(id) }
+  }, [])
+
   const begin = () => {
     const speed = new URLSearchParams(window.location.search).get('fast') ? 4 : 1 // ?fast=1 for testing
-    const game = new Game(canvasRef.current!, sampleWeather(), setUi, speed)
+    const game = new Game(canvasRef.current!, weather, setUi, speed)
     gameRef.current = game
     game.start() // inside a click handler so the browser lets us play audio
     setStarted(true)

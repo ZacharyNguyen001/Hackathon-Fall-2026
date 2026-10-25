@@ -19,7 +19,8 @@ import { doseRate, isEvac, ramp } from './sim/dose'
 import { computeCoins } from './sim/coins'
 import { step, type Body2D } from './sim/physics'
 import { FACTS, type Fact } from '../data/facts'
-import { allClearLine, evacLine, warningLine } from '../audio/lines'
+import { allClearLine, evacLine, warningClipId, warningLine } from '../audio/lines'
+import { playLine, stopVoice } from '../audio/voice'
 import { PALETTES } from '../art/palettes'
 import { SPRITES } from '../art/sprites'
 import { loadSprites, sprite } from './spriteLoader'
@@ -81,10 +82,11 @@ export class Game {
     cancelAnimationFrame(this.raf)
     window.removeEventListener('keydown', this.down)
     window.removeEventListener('keyup', this.up)
-    speechSynthesis.cancel()
+    stopVoice()
     void this.audio?.close()
   }
-  setMuted(m: boolean) { this.ui.muted = m; if (m) speechSynthesis.cancel(); this.push() }
+  setMuted(m: boolean) { this.ui.muted = m; if (m) stopVoice(); this.push() }
+  setWeather(w: SpaceWeather) { this.weather = w } // the NEXT round uses this reading (and gets a new map seed)
 
   private down = (e: KeyboardEvent) => {
     if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) e.preventDefault()
@@ -159,7 +161,7 @@ export class Game {
     while (this.clickDebt >= 1) { this.clickDebt -= 1; this.click() }
     if (this.alive && isEvac(this.dose)) {
       this.alive = false
-      this.say(evacLine)
+      this.say('evac', evacLine)
       this.ui.banner = "EVAC'D — " + evacLine
       this.push()
     }
@@ -171,7 +173,7 @@ export class Game {
     if (p === 'WARNING') { // t = 20 s: banner + caption always appear; voice plays if it can
       const line = warningLine(this.plan)
       this.ui.banner = line
-      this.say(line)
+      this.say(warningClipId(this.plan), line)
     }
     if (p === 'DISASTER' && this.alive) this.ui.banner = this.ui.banner
     if (p === 'RESULTS') this.finishRound()
@@ -184,7 +186,7 @@ export class Game {
       roundId: this.plan.roundId, body: this.plan.body, disaster: this.plan.disaster, level: this.plan.level,
       isDrill: this.plan.isDrill, survived, secondsAlive: this.secondsAlive, doseMSv: this.dose, pickups: this.got.size,
     }
-    if (survived) { this.ui.banner = allClearLine; this.say(allClearLine) }
+    if (survived) { this.ui.banner = allClearLine; this.say('all-clear', allClearLine) }
     const coins = computeCoins(report)
     if (!this.roundRecorded) {
       this.totals = addRound(this.storage, { coins, survived, doseMSv: this.dose }, this.totals)
@@ -197,10 +199,9 @@ export class Game {
   }
 
   // ---- audio ----
-  private say(text: string) {
-    if (this.ui.muted || !('speechSynthesis' in window)) return
-    speechSynthesis.cancel()
-    speechSynthesis.speak(new SpeechSynthesisUtterance(text)) // slice 1 fallback voice; ElevenLabs clips come later
+  private say(id: string, text: string) {
+    if (this.ui.muted) return
+    playLine(id, text)
   }
   private click() {
     if (!this.audio || this.ui.muted) return
