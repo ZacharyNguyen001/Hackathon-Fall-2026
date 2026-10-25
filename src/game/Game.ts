@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 /**
  * FILE PURPOSE: the heart of the game. One `Game` object owns the canvas and runs a loop 60 times a second:
  *   1. read the keyboard   2. move the player (physics)   3. advance the round timer (EXPLORE -> WARNING -> DISASTER -> RESULTS)
@@ -19,6 +20,7 @@ import { doseRate, isEvac, ramp } from './sim/dose'
 import { computeCoins } from './sim/coins'
 import { step, type Body2D } from './sim/physics'
 import { FACTS, type Fact } from '../data/facts'
+import { loadSfx, playSfx, startLoop, stopLoop, setSfxMuted } from '../audio/sfx'
 import { allClearLine, evacLine, warningClipId, warningLine } from '../audio/lines'
 import { playLine, stopVoice } from '../audio/voice'
 import { PALETTES } from '../art/palettes'
@@ -72,6 +74,7 @@ export class Game {
 
   start() { // call from a click: unlocks audio
     this.audio = new AudioContext()
+    void loadSfx(this.audio)
     window.addEventListener('keydown', this.down)
     window.addEventListener('keyup', this.up)
     this.last = performance.now()
@@ -84,8 +87,9 @@ export class Game {
     window.removeEventListener('keyup', this.up)
     stopVoice()
     void this.audio?.close()
+    stopLoop()
   }
-  setMuted(m: boolean) { this.ui.muted = m; if (m) stopVoice(); this.push() }
+  setMuted(m: boolean) { this.ui.muted = m; if (m) stopVoice(); this.push(); setSfxMuted(m) }
   setWeather(w: SpaceWeather) { this.weather = w } // the NEXT round uses this reading (and gets a new map seed)
 
   private down = (e: KeyboardEvent) => {
@@ -136,13 +140,22 @@ export class Game {
     const move = (this.keys.has('ArrowRight') || this.keys.has('KeyD') ? 1 : 0) - (this.keys.has('ArrowLeft') || this.keys.has('KeyA') ? 1 : 0)
     if (move !== 0) this.facingLeft = move < 0
     const jump = this.keys.has('Space') || this.keys.has('ArrowUp') || this.keys.has('KeyW')
+    const wasOnGround = this.player.onGround
+    if(jump && wasOnGround)
+    {
+        playSfx('jump', 0.7)
+    }
     step(this.player, this.map.tiles, dt, move, jump, gameGravity(this.plan.body))
 
     // Pick up coins by overlap with the player's center.
     const cx = this.player.x + PLAYER_W / 2, cy = this.player.y + PLAYER_H / 2
     for (const c of this.map.coins) {
       if (this.got.has(c.id)) continue
-      if (Math.hypot(cx - (c.tx * TILE_PX + 4), cy - (c.ty * TILE_PX + 4)) < COIN_RADIUS_PX + 3) this.got.add(c.id)
+      if (Math.hypot(cx - (c.tx * TILE_PX + 4), cy - (c.ty * TILE_PX + 4)) < COIN_RADIUS_PX + 3) 
+        {
+          this.got.add(c.id)
+          playSfx('coin')
+        }
     }
     // Which shelter (if any) is the player's center in? Use the best-shielding one.
     this.shield = SHIELD_OUTSIDE
@@ -174,8 +187,11 @@ export class Game {
       const line = warningLine(this.plan)
       this.ui.banner = line
       this.say(warningClipId(this.plan), line)
+      playSfx('klaxon', 0.7)
     }
     if (p === 'DISASTER' && this.alive) this.ui.banner = this.ui.banner
+    if (p === 'EXPLORE') startLoop(this.plan.body === 'mars' ? 'mars-wind-loop' : 'moon-suit-hum-loop')
+    if (p === 'RESULTS') stopLoop()
     if (p === 'RESULTS') this.finishRound()
     this.push()
   }
@@ -209,6 +225,12 @@ export class Game {
     o.frequency.value = 1800; g.gain.value = 0.04
     o.connect(g); g.connect(this.audio.destination)
     o.start(); o.stop(this.audio.currentTime + 0.012)
+
+    if (this.ui.muted) 
+      return 
+    if(playSfx('geiger-click', 0.6)) 
+      return
+
   }
 
   // ---- rendering ----
