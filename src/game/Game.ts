@@ -4,7 +4,7 @@
  *   1. read the keyboard   2. move the player (physics)   3. advance the round timer (EXPLORE -> WARNING -> DISASTER -> RESULTS)
  *   4. apply radiation dose during the disaster   5. draw the map, player, shelters and HUD.
  * It talks to React (Play.tsx) through the `onUi` callback, only when something changes.
- * All drawing here is flat placeholder rectangles marked TODO-ART (human); real art replaces them (see docs/ART_GUIDE.md).
+ * Drawing uses the human-made art when available, with placeholder shapes as fallbacks (see docs/ART_GUIDE.md).
  */
 import type { GameMap, Phase, RoundPlan, RoundReport, SpaceWeather } from '../shared/contracts'
 import {
@@ -20,20 +20,19 @@ import { doseRate, isEvac, ramp } from './sim/dose'
 import { computeCoins } from './sim/coins'
 import { step, type Body2D } from './sim/physics'
 import { FACTS, type Fact } from '../data/facts'
-import { allClearLine, evacLine, warningLine } from '../audio/lines'
 import { loadSfx, playSfx, startLoop, stopLoop, setSfxMuted } from '../audio/sfx'
+import { allClearLine, evacLine, warningClipId, warningLine } from '../audio/lines'
+import { playLine, stopVoice } from '../audio/voice'
+import { PALETTES } from '../art/palettes'
+import { SPRITES } from '../art/sprites'
+import { loadSprites, sprite } from './spriteLoader'
+import { addRound, emptyTotals, loadTotals, type Store, type Totals } from '../data/saveCoins'
 
 export interface Results {
-  survived: boolean; doseMSv: number; coins: number; pickups: number; level: number; isDrill: boolean; fact: Fact
+  survived: boolean; doseMSv: number; coins: number; totalCoins: number; pickups: number; level: number; isDrill: boolean; fact: Fact
 }
 /** What React needs to draw the overlay. Emitted only when it changes (not per frame). */
 export interface UiState { phase: Phase; banner: string | null; results: Results | null; muted: boolean }
-
-// TODO-ART (human): these are flat placeholder colors, not final palettes. Real ones go in src/art/palettes.ts.
-const PALETTE = {
-  mars: { sky: '#2a1410', ground: '#a8532c', ledge: '#c27a4b' },
-  moon: { sky: '#0b0b12', ground: '#8a8a8a', ledge: '#b0b0b0' },
-}
 
 export class Game {
   private ctx: CanvasRenderingContext2D
@@ -43,6 +42,10 @@ export class Game {
   private plan!: RoundPlan
   private map!: GameMap
   private player: Body2D = { x: 0, y: 0, vx: 0, vy: 0, onGround: false }
+  private facingLeft = false
+  private storage: Store | null = null
+  private totals: Totals = emptyTotals()
+  private roundRecorded = false
   private alive = true
   private dose = 0
   private secondsAlive = 0
@@ -58,6 +61,13 @@ export class Game {
 
   constructor(private canvas: HTMLCanvasElement, private weather: SpaceWeather, private onUi: (s: UiState) => void, speed = 1) {
     this.ctx = canvas.getContext('2d')!
+    loadSprites(SPRITES)
+    try {
+      this.storage = window.localStorage
+    } catch (error) {
+      console.warn('Browser storage is unavailable; game totals will not persist after this session.', error)
+    }
+    this.totals = loadTotals(this.storage)
     this.machine = new RoundMachine(speed)
     this.loadRound()
   }
@@ -75,12 +85,12 @@ export class Game {
     cancelAnimationFrame(this.raf)
     window.removeEventListener('keydown', this.down)
     window.removeEventListener('keyup', this.up)
-    speechSynthesis.cancel()
+    stopVoice()
     void this.audio?.close()
     stopLoop()
   }
-  setMuted(m: boolean) 
-  { this.ui.muted = m; if (m) speechSynthesis.cancel(); this.push(); setSfxMuted(m)}
+  setMuted(m: boolean) { this.ui.muted = m; if (m) stopVoice(); this.push(); setSfxMuted(m) }
+  setWeather(w: SpaceWeather) { this.weather = w } // the NEXT round uses this reading (and gets a new map seed)
 
   private down = (e: KeyboardEvent) => {
     if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) e.preventDefault()
@@ -98,6 +108,7 @@ export class Game {
     const s = this.map.spawn
     this.player = { x: s.tx * TILE_PX + 1, y: s.ty * TILE_PX - PLAYER_H + TILE_PX, vx: 0, vy: 0, onGround: false }
     this.alive = true; this.dose = 0; this.secondsAlive = 0; this.got.clear(); this.shield = SHIELD_OUTSIDE
+    this.roundRecorded = false
     this.ui.banner = null; this.ui.results = null
   }
 
@@ -127,6 +138,7 @@ export class Game {
 
   private movePlayer(dt: number) {
     const move = (this.keys.has('ArrowRight') || this.keys.has('KeyD') ? 1 : 0) - (this.keys.has('ArrowLeft') || this.keys.has('KeyA') ? 1 : 0)
+    if (move !== 0) this.facingLeft = move < 0
     const jump = this.keys.has('Space') || this.keys.has('ArrowUp') || this.keys.has('KeyW')
     const wasOnGround = this.player.onGround
     if(jump && wasOnGround)
@@ -162,7 +174,7 @@ export class Game {
     while (this.clickDebt >= 1) { this.clickDebt -= 1; this.click() }
     if (this.alive && isEvac(this.dose)) {
       this.alive = false
-      this.say(evacLine)
+      this.say('evac', evacLine)
       this.ui.banner = "EVAC'D — " + evacLine
       this.push()
     }
@@ -174,7 +186,7 @@ export class Game {
     if (p === 'WARNING') { // t = 20 s: banner + caption always appear; voice plays if it can
       const line = warningLine(this.plan)
       this.ui.banner = line
-      this.say(line)
+      this.say(warningClipId(this.plan), line)
       playSfx('klaxon', 0.7)
     }
     if (p === 'DISASTER' && this.alive) this.ui.banner = this.ui.banner
@@ -190,18 +202,22 @@ export class Game {
       roundId: this.plan.roundId, body: this.plan.body, disaster: this.plan.disaster, level: this.plan.level,
       isDrill: this.plan.isDrill, survived, secondsAlive: this.secondsAlive, doseMSv: this.dose, pickups: this.got.size,
     }
-    if (survived) { this.ui.banner = allClearLine; this.say(allClearLine) }
+    if (survived) { this.ui.banner = allClearLine; this.say('all-clear', allClearLine) }
+    const coins = computeCoins(report)
+    if (!this.roundRecorded) {
+      this.totals = addRound(this.storage, { coins, survived, doseMSv: this.dose }, this.totals)
+      this.roundRecorded = true
+    }
     this.ui.results = {
-      survived, doseMSv: this.dose, coins: computeCoins(report), pickups: this.got.size,
+      survived, doseMSv: this.dose, coins, totalCoins: this.totals.coins, pickups: this.got.size,
       level: this.plan.level, isDrill: this.plan.isDrill, fact: FACTS[(this.roundNumber - 1) % FACTS.length],
     }
   }
 
   // ---- audio ----
-  private say(text: string) {
-    if (this.ui.muted || !('speechSynthesis' in window)) return
-    speechSynthesis.cancel()
-    speechSynthesis.speak(new SpeechSynthesisUtterance(text)) // slice 1 fallback voice; ElevenLabs clips come later
+  private say(id: string, text: string) {
+    if (this.ui.muted) return
+    playLine(id, text)
   }
   private click() {
     if (!this.audio || this.ui.muted) return
@@ -220,31 +236,90 @@ export class Game {
   // ---- rendering ----
   private render() {
     const c = this.ctx
-    const pal = PALETTE[this.plan.body]
+    const pal = PALETTES[this.plan.body]
     c.imageSmoothingEnabled = false
-    c.fillStyle = pal.sky; c.fillRect(0, 0, LOGICAL_W, LOGICAL_H)
+    c.fillStyle = pal.sky;
+    c.fillRect(0, 0, LOGICAL_W, LOGICAL_H)
 
-    // TODO-ART (human): tiles are flat rectangles from the placeholder palette.
+    const groundImage = sprite(this.plan.body === 'mars' ? 'mars_ground' : 'moon_ground')
     for (let y = 0; y < MAP_H; y++)
       for (let x = 0; x < MAP_W; x++) {
         const t = this.map.tiles[y * MAP_W + x]
         if (t === T_EMPTY) continue
-        c.fillStyle = t === 1 ? pal.ground : pal.ledge
-        c.fillRect(x * TILE_PX, y * TILE_PX, TILE_PX, TILE_PX)
+        const tileX = x * TILE_PX
+        const tileY = y * TILE_PX
+        if (t === 1 && groundImage) {
+          c.drawImage(groundImage, tileX, tileY, TILE_PX, TILE_PX)
+        } else {
+          c.fillStyle = t === 1 ? pal.ground : pal.ledge
+          c.fillRect(tileX, tileY, TILE_PX, TILE_PX)
+        }
       }
-    // TODO-ART (human): shelters/pads/coins are placeholder rectangles.
+
     for (const s of this.map.shelters) {
-      c.fillStyle = s.kind === 'storm_shelter' ? '#2a8f8f' : s.kind === 'airlock' ? '#c9a227' : '#6b7a99'
-      c.fillRect(s.tx * TILE_PX, s.ty * TILE_PX, s.tw * TILE_PX, s.th * TILE_PX)
-      c.fillStyle = 'rgba(0,0,0,0.35)'
-      c.fillRect(s.tx * TILE_PX + 2, s.ty * TILE_PX + 2, s.tw * TILE_PX - 4, s.th * TILE_PX - 4)
+      const spriteName = s.kind === 'storm_shelter' ? 'stormShelter' : s.kind
+      const image = sprite(spriteName)
+      const x = s.tx * TILE_PX
+      const y = s.ty * TILE_PX
+
+      if (image) {
+        c.drawImage(image, x, y)
+      } else {
+        c.fillStyle = 
+        s.kind === 'storm_shelter' ? '#2a8f8f' : 
+        s.kind === 'airlock' ? '#c9a227' : '#6b7a99'
+        c.fillRect(x, y, s.tw * TILE_PX, s.th * TILE_PX)
+        c.fillStyle = 'rgba(0,0,0,0.35)'
+        c.fillRect(x + 2, y + 2, s.tw * TILE_PX - 4, s.th * TILE_PX - 4)
+      }
     }
-    c.fillStyle = '#1b3a6b'
-    for (const p of this.map.pads) c.fillRect(p.tx * TILE_PX, p.ty * TILE_PX + 5, 3 * TILE_PX, 3)
-    c.fillStyle = '#ffd23f'
-    for (const k of this.map.coins) if (!this.got.has(k.id)) c.fillRect(k.tx * TILE_PX + 2, k.ty * TILE_PX + 2, 4, 4)
-    c.fillStyle = this.alive ? '#f2f2f2' : '#555' // TODO-ART (human): player sprite
-    c.fillRect(Math.round(this.player.x), Math.round(this.player.y), PLAYER_W, PLAYER_H)
+
+    const solarPadImage = sprite('solarPad')
+    for (const p of this.map.pads) {
+      const x = p.tx * TILE_PX
+      const y = p.ty * TILE_PX
+
+      if (solarPadImage) {
+        c.drawImage(solarPadImage, x, y)
+      } else {
+        c.fillStyle = '#1b3a6b'
+        c.fillRect(x, y + 5, 3 * TILE_PX, 3)
+      }
+    }
+
+    const coinImage = sprite('coin')
+    for (const k of this.map.coins) {
+      if (this.got.has(k.id)) continue
+
+      const x = k.tx * TILE_PX
+      const y = k.ty * TILE_PX
+
+      if (coinImage) {
+        c.drawImage(coinImage, x, y)
+      } else {
+        c.fillStyle = '#ffd23f'
+        c.fillRect(x + 2, y + 2, 4, 4)
+      }
+    }
+
+    const playerImage = sprite('player')
+    if (playerImage) {
+      const x = Math.round(this.player.x) - 1
+      const y = Math.round(this.player.y) - 2
+      if (this.facingLeft) {
+        c.save()
+        c.translate(x * 2 + playerImage.width, 0)
+        c.scale(-1, 1)
+        c.drawImage(playerImage, x, y)
+        c.restore()
+      } else {
+        c.drawImage(playerImage, x, y)
+      }
+    }  else {
+       c.fillStyle = this.alive ? '#f2f2f2' : '#555'
+       c.fillRect(Math.round(this.player.x), Math.round(this.player.y), PLAYER_W, PLAYER_H)
+
+    }
 
     // Sky tint follows the radiation ramp.
     if (this.machine.phase === 'DISASTER') {
@@ -261,8 +336,8 @@ export class Game {
     c.fillStyle = '#fff'
     const left = this.machine.remaining
     c.fillText(`${this.plan.body.toUpperCase()}  R${this.roundNumber}  ${this.machine.phase}  ${Math.ceil(left)}s`, 4, 3)
-    c.fillStyle = this.alive ? '#ffd23f' : '#ff6666'
-    c.fillText(this.alive ? `COINS ${this.got.size * 5}` : "EVAC'D", LOGICAL_W - 60, 3)
+    c.fillStyle = '#ffd23f'
+    c.fillText(`BANK ${this.totals.coins}`, LOGICAL_W - 60, 3)
     const w = this.weather
     const flux = w.protonFlux10MeV == null ? '?' : w.protonFlux10MeV.toFixed(2)
     c.fillStyle = this.plan.isDrill ? '#ffb347' : '#ff4d4d'

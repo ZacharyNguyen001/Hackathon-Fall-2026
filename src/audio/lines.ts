@@ -10,3 +10,16 @@ export function warningLine(plan: Pick<RoundPlan, 'level' | 'isDrill'>): string 
 }
 export const evacLine = 'Crew member evacuated. Radiation limit exceeded.'
 export const allClearLine = 'All clear. Radiation levels are falling.'
+
+/** Every clip the bake script makes. id = mp3 file name (without .mp3). */
+export function warningClipId(plan: { level: number; isDrill: boolean }) {
+  return `solar-warning-s${plan.level}-${plan.isDrill ? 'drill' : 'live'}`
+}
+export const VOICE_LINES: { id: string; text: string }[] = [
+  ...[1, 2, 3, 4, 5].flatMap((level) =>
+    [true, false].map((isDrill) => ({ id: warningClipId({ level, isDrill }), text: warningLine({ level, isDrill }) })),
+  ),
+  { id: 'evac', text: evacLine },
+  { id: 'all-clear', text: allClearLine },
+  // Garri will send the dust-storm sentences: add { id: 'dust-warning-1', text: '...' } etc.
+]
