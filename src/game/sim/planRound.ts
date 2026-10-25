@@ -13,7 +13,8 @@ import { seedFor } from '../world/rng'
 export function planRound(roundNumber: number, weather: SpaceWeather, seedOverride?: number): RoundPlan {
   const body: Body = roundNumber % 2 === 1 ? 'mars' : 'moon'
   const isDrill = weather.sLevel < 1
-  const level = isDrill ? DRILL_LEVELS[(roundNumber - 1) % DRILL_LEVELS.length] // S2 -> S3 -> S4 -> S5 -> S2 ... : weather.sLevel
+  // Drill levels cycle S2 -> S3 -> S4 -> S5 -> S2 ... by round.
+  const level = isDrill ? DRILL_LEVELS[(roundNumber - 1) % DRILL_LEVELS.length] : weather.sLevel
   return {
     roundId: `r${roundNumber}-${weather.observedAt}`,
     roundNumber,
