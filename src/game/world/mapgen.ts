@@ -33,7 +33,7 @@ function limitSteps(h: number[], step: number, locked: Set<number>) {
 }
 
 function makeShelter(id: string, kind: Shelter['kind'], x: number, tw: number, th: number, h: number[]): Shelter {
-  const factor = kind === 'storm_shelter' ? SHIELD_STORM_SHELTER : kind === 'habitat' ? SHIELD_HABITAT : SHIELD_HABITAT
+  const factor = kind === 'storm_shelter' ? SHIELD_STORM_SHELTER : SHIELD_HABITAT;
   return { id, kind, tx: x, tw, th, ty: MAP_H - h[x] - th, shieldFactor: factor }
 }
 
@@ -84,7 +84,7 @@ function generateOnce(seed: number, body: Body): GameMap {
 
   // 4. Two floating ledges, reachable by one max-height jump from the ground below.
   for (let i = 0; i < 2; i++) {
-    const lx = 14 + Math.floor(rng() * 18) + i * 0
+    const lx = 14 + Math.floor(rng() * 18)
     const lw = 4
     if (shelters.some((s) => lx < s.tx + s.tw + 1 && lx + lw > s.tx - 1)) continue
     const topGround = Math.max(...h.slice(lx, lx + lw))

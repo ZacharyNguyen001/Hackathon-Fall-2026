@@ -11,7 +11,7 @@ Where a row says "adapted from Claude-written snippets in the planning guides (c
 | date-time | commit | file | what Claude did | human reviewer |
 |---|---|---|---|---|
 | 2026-10-24 11:40 | 9f04037 | `.gitignore` | Added .env* and macOS ignores | Jaydon |
-| 2026-10-24 11:40 | 9f04037 | `storm-shelter-geaux26/.gitignore` (removed in 3ab1517) | Scaffold ignore file (boilerplate from the create-deepspace scaffold) | X |
+| 2026-10-24 11:40 | 9f04037 | `storm-shelter-geaux26/.gitignore` (removed in 3ab1517) | Scaffold ignore file (boilerplate from the create-deepspace scaffold) | Jaydon |
 | 2026-10-24 11:40 | 9f04037 | `src/game/tunables.ts` (first written as `storm-shelter-geaux26/src/game/tunables.ts`, moved in 3ab1517) | Wrote all game constants, each tagged GAME VALUE or REAL | Johnae |
 | 2026-10-24 11:40 | 9f04037 | `src/shared/hash.ts`, `src/shared/contracts.ts` (same move) | FNV-1a hash and the shared types | Johnae |
 | 2026-10-24 11:40 | 9f04037 | `src/game/world/{rng,tiles,bodies,mapgen,reachability}.ts`, `mapgen.test.ts` (same move) | Seeded RNG, map generator with BFS reachability + retry/fallback, tests | Jaydon |
