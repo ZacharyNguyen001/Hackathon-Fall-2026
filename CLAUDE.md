@@ -10,8 +10,7 @@ Prompt we are answering (GeauxHack 2026, "Life in Space"): build an app, game, s
 tool that models how humans survive in hostile off-Earth environments using real space-mission
 data, environmental readings, habitat metrics, or other information about living beyond Earth.
 
-Tracks we are entering: the main GeauxHack bracket + **Best Project Built with ElevenLabs**. Team of 3. Hard deadline: **Sunday Oct 25, 12:00 PM CDT** (no code
-changes after that, ever — it is a disqualification).
+Tracks we are entering: the main GeauxHack bracket + **Best Project Built with ElevenLabs**. Team of 3. Hard deadline: **Sunday Oct 25, 12:00 PM CDT** (no code changes after that, ever — it is a disqualification).
 
 ---
 
