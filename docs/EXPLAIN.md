@@ -3,6 +3,7 @@
 ## The page and the loop
 - `src/main.tsx` mounts `src/Play.tsx`. Play.tsx shows the canvas, the "click to start" screen (browsers need a click before they allow sound), the red warning banner, the results card and the mute button.
 - `src/game/Game.ts` owns the canvas and runs a 60-steps-per-second loop: read the keyboard, move the player, advance the round clock, apply radiation, draw. It tells React only when something changes (phase, banner, results).
+- The tile renderer picks the Mars or Moon ground and ledge images. It draws a 32 × 8 ledge sprite once across each continuous row of ledge tiles; if the image has not loaded, it draws the existing flat-color tile fallback.
 
 ## A round
 - `planRound` picks Mars or Moon (they alternate) and a drill level. The `RoundMachine` timer walks EXPLORE (20 s) -> WARNING (12 s) -> DISASTER (40 s) -> RESULTS (8 s) -> INTERMISSION (8 s).
