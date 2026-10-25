@@ -30,7 +30,7 @@ Where a row says "adapted from Claude-written snippets in the planning guides (c
 | 2026-10-24 15:55 | cff9968 | `src/Play.tsx`, `src/game/Game.ts`, `src/audio/lines.ts` | Teammate-added hooks: NOAA refresh every 5 min (`fetchLiveWeather`, `setWeather`), `say()` -> `playLine`, `warningClipId` / `VOICE_LINES`. From the planning guides (commit 29e8353, since deleted) | ____ |
 | 2026-10-24 16:21 | ab1fe42 | `scripts/bake-sfx.ts` | ElevenLabs sound-effects bake script. Adapted from Claude-written snippets in the planning guides (commit 29e8353, since deleted) | Zachary |
 | 2026-10-24 16:21 | dd1e5e9 | `src/audio/sfx.ts` | Web Audio sound-effect player and loops. Adapted from Claude-written snippets in the planning guides (commit 29e8353, since deleted) | ____ |
-| 2026-10-24 16:43 | 158465b | `CLAUDE.md`, `README.md`, `docs/ART_GUIDE.md`, `docs/DEMO_RUN_SHEET.md` | Retired the dust storm and Garri's guide (docs only); wrote the demo run sheet | ____ |
+| 2026-10-24 16:43 | 158465b | `CLAUDE.md`, `README.md`, `docs/ART_GUIDE.md`, `docs/DEMO_RUN_SHEET.md` | Retired the dust storm and Garri's guide (docs only); wrote the demo run sheet | Jaydon |
 | 2026-10-24 16:55 | bceda96, ed21f54 | `src/game/Game.ts` | Teammate-added sfx hooks (loadSfx, Geiger click, klaxon, loops). From the planning guides (commit 29e8353, since deleted) | Johnae |
 | 2026-10-24 18:36 | d146843 | `src/game/Game.ts` | Teammate-added coin and jump sound hooks. From the planning guides (commit 29e8353, since deleted) | Jaydon, Johnae, Zach |
 | 2026-10-24 19:57 | 7a95994 | `src/data/saveCoins.ts`, `saveCoins.test.ts` | Save coins and career dose in `localStorage`. Adapted from Claude-written snippets in the planning guides (commit 29e8353, since deleted) | Johnae |
