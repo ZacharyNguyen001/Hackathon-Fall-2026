@@ -19,9 +19,9 @@ Pick ONE person to drive the game and ONE to talk. Rehearse it twice.
 | 2:00 | Point at the HUD line | "This is NOAA's real proton flux right now: S0, so the sun is quiet. We never fake it: it says **DRILL**, not LIVE. If NOAA ever reports S1 or higher, the round becomes a **LIVE STORM**." |
 | 2:30 | The warning plays (t=20 s). Point at the banner/caption | "Mission control is an ElevenLabs voice, pre-generated so there is no key in the browser. The caption is always on screen, for judges with bad audio. The 12-second lead is a game value; we don't claim real warning times." |
 | 3:00 | Run to a shelter. Watch the dose bar and Geiger clicks | "Dose = storm strength x where you stand. Outside 1.0, habitat 0.5 (real: aluminum shielding cuts solar-particle dose about half), storm shelter 0.1 (a game value). The close shelter is weak, the far one is strong; that choice is the game. 250 mSv is the real crew design limit for one event. At that you're **EVAC'D**." |
-| 4:30 | Results card: dose, coins, fact + source | "Every fact has a source. The 600 mSv NASA career limit is only *proposed*, and we say so." Open **real vs tuned** if present. |
+| 4:30 | Results card: dose, coins, fact + source | "Every fact has a source. The 600 mSv NASA career limit is only *proposed*, and we say so." Click **What's real vs. tuned?**. |
 | 5:30 | Next round (Moon): note higher jumps | "Moon and Mars keep their real gravity ratio, 1.62 vs 3.71, so you jump higher on the Moon. A search proves every shelter is reachable." |
-| 6:30 | Slide/talk | Two outside services only (NOAA data, ElevenLabs voice + sound effects), no backend. Tests cover the map, dose and parsers. AI-assisted code is logged in `docs/AI_USAGE.md`; all art is hand-drawn by <artist name>. |
+| 6:30 | Slide/talk | Two outside services only (NOAA data, ElevenLabs voice + sound effects), no backend. Tests cover the map, dose and parsers. AI-assisted code is logged in `docs/AI_USAGE.md`; all art is hand-drawn by Johnae Avery. |
 | 7:30 | Questions | |
 
 ## If something breaks

@@ -1,5 +1,5 @@
 /**
- * FILE PURPOSE: builds one level from a seed. Steps: hills (smooth random heights) -> a crater -> flatten spots for the shelters (a near habitat, a far storm shelter, a Mars airlock) -> floating ledges -> solar pads (Mars) -> coins.
+ * FILE PURPOSE: builds one level from a seed. Steps: hills (smooth random heights) -> a crater -> flatten spots for the shelters (a near habitat, a far storm shelter, a Mars airlock) -> floating ledges -> coins.
  * Then it CHECKS the level can be finished (reachability.ts). If not, it tries seed+1, up to 20 times, then uses a plain flat level. Same seed = same level.
  */
 import type { Body, GameMap, Shelter } from '../../shared/contracts'
@@ -93,14 +93,9 @@ function generateOnce(seed: number, body: Body): GameMap {
     for (let x = lx; x < lx + lw; x++) tiles[row * MAP_W + x] = T_LEDGE
   }
 
-  // 5. Solar pads on Mars (three tiles wide, sitting on the ground).
-  const pads: GameMap['pads'] = []
-  if (body === 'mars')
-    for (const px of [mx(26, 3), mx(30, 3)]) pads.push({ tx: px, ty: MAP_H - h[px] - 1 })
-
   const spawn = { tx: spawnX, ty: MAP_H - h[spawnX] - 1 }
 
-  // 6. Coins on reachable standing cells (picked by the seeded RNG).
+  // 5. Coins on reachable standing cells (picked by the seeded RNG).
   const reach = reachableCells(tiles, spawn, step)
   const cells = [...reach]
     .map((k) => k.split(',').map(Number))
@@ -113,7 +108,7 @@ function generateOnce(seed: number, body: Body): GameMap {
     coins.push({ id: `c${i}`, tx: x, ty: y })
   }
 
-  return { widthTiles: 48, heightTiles: 27, tiles, spawn, shelters, pads, coins, usedFallback: false }
+  return { widthTiles: 48, heightTiles: 27, tiles, spawn, shelters, coins, usedFallback: false }
 }
 
 /** True when the player can walk/jump from spawn to the floor of every shelter. */
@@ -132,9 +127,8 @@ export function fallbackMap(body: Body): GameMap {
     makeShelter('storm', 'storm_shelter', 34, 8, 5, h),
   ]
   if (body === 'mars') shelters.push(makeShelter('airlock', 'airlock', 21, 4, 4, h))
-  const pads = body === 'mars' ? [{ tx: 26, ty: MAP_H - 7 }, { tx: 30, ty: MAP_H - 7 }] : []
   return {
-    widthTiles: 48, heightTiles: 27, tiles, spawn: { tx: 4, ty: MAP_H - 7 }, shelters, pads,
+    widthTiles: 48, heightTiles: 27, tiles, spawn: { tx: 4, ty: MAP_H - 7 }, shelters,
     coins: [{ id: 'c0', tx: 18, ty: MAP_H - 7 }, { id: 'c1', tx: 28, ty: MAP_H - 7 }, { id: 'c2', tx: 31, ty: MAP_H - 7 }],
     usedFallback: true,
   }

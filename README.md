@@ -13,7 +13,7 @@ Each teammate has a step-by-step guide in [`docs/team/`](docs/team/00-START-HERE
 - **External APIs (max 2):** NOAA SWPC (space-weather data) and ElevenLabs (voice). Nothing else, and no backend.
   The project started on a hosted backend platform, but the organizers counted it as an API, so it was removed.
 - **AI-assisted code:** every file Claude wrote or changed is logged in `docs/AI_USAGE.md`.
-- **No AI-generated images or video.** All art is made by a human (see `docs/ART_GUIDE.md`). Until it is added, the game draws flat placeholder rectangles marked `TODO-ART`.
+- **No AI-generated images or video.** All art is hand-made by a human (Johnae Avery, see `docs/ART_GUIDE.md`). Where a picture is missing the game falls back to a flat placeholder shape.
 - **Font:** Bitcount (OFL-1.1), bundled via the npm package `@fontsource-variable/bitcount`.
 - **Real vs tuned values:** `docs/DATA_SOURCES.md` lists the real facts; `src/game/tunables.ts` tags every number as GAME VALUE or REAL.
 
@@ -23,10 +23,11 @@ Each teammate has a step-by-step guide in [`docs/team/`](docs/team/00-START-HERE
 3. **A round** is a timer with five phases: INTERMISSION (8 s) -> EXPLORE (20 s) -> WARNING (12 s) -> DISASTER (40 s) -> RESULTS (8 s) -> next round.
 4. **The map** is built from a *seed*: a number made by hashing the NOAA reading time + round number + body (Mars/Moon). Same seed = same map, always (`rng.ts`, `hash.ts`). The generator makes hills, a crater, ledges and shelters, then runs a search (BFS) to prove every shelter can be reached, otherwise it tries the next seed.
 5. **Gravity.** Moon and Mars keep their real gravity ratio, so the Moon's jumps are higher; the map generator uses jump height so steps are always climbable.
-6. **The warning.** At exactly 20 s a red banner and caption appear and a voice speaks (browser speech for now; ElevenLabs clips are coming).
+6. **The warning.** At exactly 20 s a red banner and caption appear and a voice speaks: a pre-baked ElevenLabs clip, with the browser's built-in voice as the fallback if the file is missing or slow. The caption is always shown.
 7. **The storm.** Radiation ramps up for 8 s, holds, then eases. Dose per second = peak rate x ramp x shield factor of where you stand: outside 1.0, habitat 0.5, storm shelter 0.1. At 250 mSv you are "EVAC'D" (we never say "died").
-8. **LIVE vs DRILL.** If NOAA's real S-level is 0 (the normal case), every storm is labeled a DRILL. Only a real S1 or higher is called LIVE. Right now the game uses saved real NOAA data (`src/data/noaa-sample/`).
-9. **Results.** Survived or EVAC'D, dose vs limit, coins (+1 per second alive during warning/disaster, +10 for surviving, +5 per pickup), and one real fact with its source.
+8. **LIVE vs DRILL.** If NOAA's real S-level is 0 (the normal case), every storm is labeled a DRILL. Only a real S1 or higher is called LIVE. The game fetches NOAA's live data in the browser (at most every 5 minutes). If that fails (offline, NOAA down) it uses real responses we saved (`src/data/noaa-sample/`). The HUD always says `live` or `sample` and shows when NOAA made the reading.
+9. **Results.** Survived or EVAC'D, dose vs limit, coins (+1 per second alive during warning/disaster, +10 for surviving, +5 per pickup), and one real fact with its source. A "What's real vs. tuned?" button lists which numbers are real, proposed, or tuned for gameplay.
+10. **Saving.** Total coins and career radiation dose are saved in the browser (`localStorage`) on this device only. There is no server, account or global leaderboard.
 
 ## What each file is for
 | File | Purpose |
@@ -44,7 +45,17 @@ Each teammate has a step-by-step guide in [`docs/team/`](docs/team/00-START-HERE
 | `src/shared/contracts.ts` | Shared data shapes (types) |
 | `*.test.ts` | Automatic tests (`npm test`) |
 | `docs/` | AI usage log, plain-English walkthrough, data sources, art guide |
-| `mars-wind-loop.mp3` | Mars Ambience Sound Effect (credit: NASA)
+| `src/audio/voice.ts`, `sfx.ts` | Play the baked voice clips (with browser-voice fallback) and the sound effects |
+| `src/data/liveWeather.ts`, `saveCoins.ts` | Fetch live NOAA data; save totals on this device |
+| `src/art/*` | Hand-made sprites and palettes (human-authored only) |
+| `scripts/bake-audio.ts`, `bake-sfx.ts` | Run locally with a git-ignored key to make the ElevenLabs audio files |
 
-## Not done yet
-Live NOAA fetch (currently saved samples), ElevenLabs baked voice and sound effects, real sound effects, human-made art, local coin saving, demo script.
+## Build and host
+`npm install`, then `npm run build` makes the static site in `dist/` (paths are relative, so it works from any folder). The live demo must be built from the tagged commit (`submission`).
+
+## Credits
+- **Voice and sound effects:** generated with ElevenLabs (premade library voice, no cloning), baked ahead of time by the scripts in `scripts/`. Logged in `docs/AI_USAGE.md`.
+- **`mars-wind-loop.mp3`:** Mars ambience sound effect (credit: NASA).
+- **Art (sprites and palettes):** Johnae Avery, drawn by hand.
+- **Font:** Bitcount (OFL-1.1) via `@fontsource-variable/bitcount`.
+- **Space-weather data:** NOAA Space Weather Prediction Center (SWPC).

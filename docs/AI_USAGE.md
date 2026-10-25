@@ -21,3 +21,8 @@
 
 
 | 2026-10-24 16:43 | CLAUDE.md, README.md, docs/team/*, docs/ART_GUIDE.md, docs/DEMO_RUN_SHEET.md | Retired the dust storm and Garri's guide (docs only); wrote the demo run sheet | TBD |
+| 2026-10-24 20:29 | src/game/world/mapgen.ts, src/shared/contracts.ts, src/audio/lines.ts, src/game/Game.ts | Removed the solar pads and dust_storm type (dust storm retired); fixed ?fast=1 dose scaling; Geiger click uses the sound file first; HUD shows the NOAA reading time; results show career dose and whether saving works | TBD |
+| 2026-10-24 20:29 | src/audio/voice.ts | Rewrote so an old line's timer can't speak late and the clip and browser voice can't overlap; added preloading | TBD |
+| 2026-10-24 20:29 | src/Play.tsx | Results card shows saved totals and career dose vs the proposed limit; added the "What's real vs. tuned?" panel; buttons release focus so Space still jumps | TBD |
+| 2026-10-24 20:29 | src/rules.test.ts, vite.config.ts | Added the test that allows only NOAA and ElevenLabs web addresses; relative base path for hosting anywhere | TBD |
+| 2026-10-24 20:29 | README.md, docs/EXPLAIN.md, docs/DEMO_RUN_SHEET.md | Brought docs up to date with the merged code | TBD |
