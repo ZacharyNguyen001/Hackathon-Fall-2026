@@ -1,4 +1,3 @@
-/* eslint-disable no-await-in-loop */
 /**
  * FILE PURPOSE: the heart of the game. One `Game` object owns the canvas and runs a loop 60 times a second:
  *   1. read the keyboard   2. move the player (physics)   3. advance the round timer (EXPLORE -> WARNING -> DISASTER -> RESULTS)
@@ -21,15 +20,15 @@ import { computeCoins } from './sim/coins'
 import { step, type Body2D } from './sim/physics'
 import { FACTS, type Fact } from '../data/facts'
 import { loadSfx, playSfx, startLoop, stopLoop, setSfxMuted } from '../audio/sfx'
-import { allClearLine, evacLine, warningClipId, warningLine } from '../audio/lines'
-import { playLine, stopVoice } from '../audio/voice'
+import { allClearLine, evacLine, VOICE_LINES, warningClipId, warningLine } from '../audio/lines'
+import { playLine, preloadVoice, stopVoice } from '../audio/voice'
 import { PALETTES } from '../art/palettes'
 import { SPRITES } from '../art/sprites'
 import { loadSprites, sprite } from './spriteLoader'
 import { addRound, emptyTotals, loadTotals, type Store, type Totals } from '../data/saveCoins'
 
 export interface Results {
-  survived: boolean; doseMSv: number; coins: number; totalCoins: number; pickups: number; level: number; isDrill: boolean; fact: Fact
+  survived: boolean; doseMSv: number; coins: number; totalCoins: number; careerDoseMSv: number; canSave: boolean; pickups: number; level: number; isDrill: boolean; fact: Fact
 }
 /** What React needs to draw the overlay. Emitted only when it changes (not per frame). */
 export interface UiState { phase: Phase; banner: string | null; results: Results | null; muted: boolean }
@@ -59,7 +58,7 @@ export class Game {
   private ui: UiState = { phase: 'INTERMISSION', banner: null, results: null, muted: false }
   private skipFirstIntermission = true
 
-  constructor(private canvas: HTMLCanvasElement, private weather: SpaceWeather, private onUi: (s: UiState) => void, speed = 1) {
+  constructor(private canvas: HTMLCanvasElement, private weather: SpaceWeather, private onUi: (s: UiState) => void, private speed = 1) {
     this.ctx = canvas.getContext('2d')!
     loadSprites(SPRITES)
     try {
@@ -75,6 +74,7 @@ export class Game {
   start() { // call from a click: unlocks audio
     this.audio = new AudioContext()
     void loadSfx(this.audio)
+    preloadVoice(VOICE_LINES.map((l) => l.id)) // download the voice clips now so the warning plays on time
     window.addEventListener('keydown', this.down)
     window.addEventListener('keyup', this.up)
     this.last = performance.now()
@@ -129,8 +129,10 @@ export class Game {
     const playing = phase === 'EXPLORE' || phase === 'WARNING' || phase === 'DISASTER'
 
     if (playing && this.alive) this.movePlayer(dt)
-    if ((phase === 'WARNING' || phase === 'DISASTER') && this.alive) this.secondsAlive += dt * 1 // real-time seconds
-    if (phase === 'DISASTER') this.applyRadiation(dt)
+    // The round clock runs `speed` times faster in ?fast=1 test mode, so dose and seconds-alive use the same scaled time.
+    const gameDt = dt * this.speed
+    if ((phase === 'WARNING' || phase === 'DISASTER') && this.alive) this.secondsAlive += gameDt
+    if (phase === 'DISASTER') this.applyRadiation(gameDt)
 
     const next = m.tick(dt)
     if (next) this.enterPhase(next)
@@ -189,7 +191,6 @@ export class Game {
       this.say(warningClipId(this.plan), line)
       playSfx('klaxon', 0.7)
     }
-    if (p === 'DISASTER' && this.alive) this.ui.banner = this.ui.banner
     if (p === 'EXPLORE') startLoop(this.plan.body === 'mars' ? 'mars-wind-loop' : 'moon-suit-hum-loop')
     if (p === 'RESULTS') stopLoop()
     if (p === 'RESULTS') this.finishRound()
@@ -209,7 +210,7 @@ export class Game {
       this.roundRecorded = true
     }
     this.ui.results = {
-      survived, doseMSv: this.dose, coins, totalCoins: this.totals.coins, pickups: this.got.size,
+      survived, doseMSv: this.dose, coins, totalCoins: this.totals.coins, careerDoseMSv: this.totals.careerDoseMSv, canSave: this.storage !== null, pickups: this.got.size,
       level: this.plan.level, isDrill: this.plan.isDrill, fact: FACTS[(this.roundNumber - 1) % FACTS.length],
     }
   }
@@ -221,16 +222,12 @@ export class Game {
   }
   private click() {
     if (!this.audio || this.ui.muted) return
+    if (playSfx('geiger-click', 0.6)) return // the real sound file, if it loaded
+    // Fallback: a tiny synthesized beep.
     const o = this.audio.createOscillator(), g = this.audio.createGain()
     o.frequency.value = 1800; g.gain.value = 0.04
     o.connect(g); g.connect(this.audio.destination)
     o.start(); o.stop(this.audio.currentTime + 0.012)
-
-    if (this.ui.muted) 
-      return 
-    if(playSfx('geiger-click', 0.6)) 
-      return
-
   }
 
   // ---- rendering ----
@@ -271,19 +268,6 @@ export class Game {
         c.fillRect(x, y, s.tw * TILE_PX, s.th * TILE_PX)
         c.fillStyle = 'rgba(0,0,0,0.35)'
         c.fillRect(x + 2, y + 2, s.tw * TILE_PX - 4, s.th * TILE_PX - 4)
-      }
-    }
-
-    const solarPadImage = sprite('solarPad')
-    for (const p of this.map.pads) {
-      const x = p.tx * TILE_PX
-      const y = p.ty * TILE_PX
-
-      if (solarPadImage) {
-        c.drawImage(solarPadImage, x, y)
-      } else {
-        c.fillStyle = '#1b3a6b'
-        c.fillRect(x, y + 5, 3 * TILE_PX, 3)
       }
     }
 
@@ -340,9 +324,11 @@ export class Game {
     c.fillText(`BANK ${this.totals.coins}`, LOGICAL_W - 60, 3)
     const w = this.weather
     const flux = w.protonFlux10MeV == null ? '?' : w.protonFlux10MeV.toFixed(2)
+    // "2026-10-24T16:06:00Z" -> "10-24 16:06Z" (when NOAA made the reading)
+    const obs = `${w.observedAt.slice(5, 10)} ${w.observedAt.slice(11, 16)}Z`
     c.fillStyle = this.plan.isDrill ? '#ffb347' : '#ff4d4d'
     c.fillText(
-      this.plan.isDrill ? `DRILL - real sun is quiet (S${w.sLevel}, ${flux} pfu, ${w.source})` : `LIVE STORM S${w.sLevel} (${flux} pfu)`,
+      this.plan.isDrill ? `DRILL - real sun is quiet (S${w.sLevel}, ${flux} pfu, ${w.source}, obs ${obs})` : `LIVE STORM S${w.sLevel} (${flux} pfu, ${w.source}, obs ${obs})`,
       4, 12,
     )
     // Dose meter: only once the warning has sounded.

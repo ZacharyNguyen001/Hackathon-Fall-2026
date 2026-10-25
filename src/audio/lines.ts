@@ -21,5 +21,4 @@ export const VOICE_LINES: { id: string; text: string }[] = [
   ),
   { id: 'evac', text: evacLine },
   { id: 'all-clear', text: allClearLine },
-  // Garri will send the dust-storm sentences: add { id: 'dust-warning-1', text: '...' } etc.
 ]

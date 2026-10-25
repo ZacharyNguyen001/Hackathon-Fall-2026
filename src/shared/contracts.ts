@@ -3,7 +3,7 @@
  */
 /** Handoff types shared by the game, UI and (later) audio/data code. */
 export type Body = 'moon' | 'mars'
-export type DisasterKind = 'solar_storm' | 'dust_storm' | 'co2_leak' | 'blackout'
+export type DisasterKind = 'solar_storm' | 'co2_leak' | 'blackout'
 export type Phase = 'INTERMISSION' | 'EXPLORE' | 'WARNING' | 'DISASTER' | 'RESULTS'
 
 export interface SpaceWeather {
@@ -41,7 +41,6 @@ export interface GameMap {
   tiles: Uint8Array
   spawn: { tx: number; ty: number }
   shelters: Shelter[]
-  pads: { tx: number; ty: number }[]
   coins: { id: string; tx: number; ty: number }[]
   usedFallback: boolean
 }
