@@ -1,6 +1,6 @@
 # Storm Shelter (GeauxHack 2026, "Life in Space")
 
-*A Roblox-style survival round game on the Moon and Mars: every map is built from the live NOAA space-weather reading, a pre-recorded ElevenLabs mission-control voice warns you, and you must reach the right radiation shelter in time.*
+*A style survival round game on the Moon and Mars: every map is built from the live NOAA space-weather reading, a pre-recorded ElevenLabs mission-control voice warns you, and you must reach the right radiation shelter in time.*
 
 ## Team
 - Jaydon
@@ -72,7 +72,7 @@ Pushing to `main` publishes the site to GitHub Pages through `.github/workflows/
 
 ## Extras
 ### Who did what
-Drafted from the git history and `docs/team/` assignments.
+Drafted from the git history.
 
 | Person | Work |
 |---|---|
@@ -81,7 +81,7 @@ Drafted from the git history and `docs/team/` assignments.
 | Johnae | All art (sprites, palettes, ground tiles), saved coins and career dose |
 | Garri | Left the team during the event |
 
-Confirmed by team: Yes
+Confirmed by team: Jaydon, Zach, Johnae
 
 ### How the game works (plain English)
 1. **Start.** The page (`src/Play.tsx`) shows a "click to start" screen. A click is required because browsers block sound until the player interacts.
@@ -115,6 +115,3 @@ Confirmed by team: Yes
 | `src/data/liveWeather.ts`, `saveCoins.ts` | Fetch live NOAA data; save totals on this device |
 | `src/art/*` | Hand-made sprites and palettes (human-authored only) |
 | `scripts/bake-audio.ts`, `bake-sfx.ts` | Run locally with a git-ignored key to make the ElevenLabs audio files |
-
-### Team guides
-Each teammate has a step-by-step guide in [`docs/team/`](docs/team/00-START-HERE.md): start with `00-START-HERE.md`, then your own file (Jaydon: NOAA + ElevenLabs, Zach: sound effects, Johnae: saved coins + art).

@@ -3,7 +3,6 @@
 **Rule:** all art is made by a person, by hand. No AI-generated images, sprites, icons or logos (CLAUDE.md rule 3).
 Claude does not write or edit anything inside `src/art/`.
 
-Full step-by-step instructions (including the loader code) are in **`docs/team/johnae-coins-and-art.md`**, Parts B and C.
 
 ## Exact files (all in `src/art/`, PNG with transparent background, 1 art pixel = 1 game pixel)
 | File | Size (px) |
