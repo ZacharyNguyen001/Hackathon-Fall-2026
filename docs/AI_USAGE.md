@@ -19,7 +19,7 @@ Where a row says "adapted from Claude-written snippets in the planning guides (c
 | 2026-10-24 11:40 | 9f04037 | `src/data/{noaa,sampleWeather,facts}.ts`, `noaa-sample/*.json`, `noaa.test.ts` (same move) | Defensive NOAA parsers, saved real samples, cited facts, tests | Jaydon |
 | 2026-10-24 11:40 | 9f04037 | `src/audio/lines.ts` (same move) | Warning / evac / all-clear text templates | Jaydon |
 | 2026-10-24 11:40 | 9f04037 | `src/game/Game.ts`, `src/Play.tsx` (first written as `storm-shelter-geaux26/src/pages/play.tsx`, moved in 3ab1517) | Canvas game loop, input, placeholder-rect rendering, HUD, results card | Johnae |
-| 2026-10-24 11:40 | 9f04037 | `CLAUDE.md`, `README.md`, `docs/{AI_USAGE,DATA_SOURCES,EXPLAIN}.md` | Project rules, docs and API-decision note | ____ |
+| 2026-10-24 11:40 | 9f04037 | `CLAUDE.md`, `README.md`, `docs/{AI_USAGE,DATA_SOURCES,EXPLAIN}.md` | Project rules, docs and API-decision note | Johnae |
 | 2026-10-24 11:40 | 9f04037 | `storm-shelter-geaux26/**` scaffold (removed in 3ab1517), `.agents/skills/deepspace/**` (removed in 3ab1517) | Boilerplate from the `create-deepspace` scaffold; not game code, deleted because the organizers counted the backend as an API | Johnae |
 | 2026-10-24 11:44 | 3ab1517 | `package.json`, `vite.config.ts`, `tsconfig.json`, `index.html`, `src/main.tsx`, `src/Play.tsx` | Moved the app to the repo root as a plain Vite+React+TS project; removed the DeepSpace scaffold | ____ |
 | 2026-10-24 12:06 | fcbfaa4 | `src/**/*.ts(x)` (header comments only), `docs/ART_GUIDE.md`, `README.md`, `CLAUDE.md` | Added "FILE PURPOSE" headers, README walkthrough, art guide; removed DeepSpace mentions from CLAUDE.md | Johnae |
