@@ -44,10 +44,10 @@ Where a row says "adapted from Claude-written snippets in docs/team/*.md", the t
 | 2026-10-24 20:35 | d9283b2 | `.github/workflows/deploy.yml` | GitHub Pages deploy workflow (CI config, no theme content) | ____ |
 | 2026-10-24 20:35 | d9283b2 | `scripts/bake-sfx.ts`, `README.md` | Removed the mars-wind-loop prompt from the SFX script (it is a NASA recording); README NASA credit placeholder | ____ |
 | 2026-10-24 21:05 | cbda5b3 | `src/game/Game.ts`, `src/Play.tsx`, `src/game/tunables.ts`, `src/game/sim/sim.test.ts`, `docs/EXPLAIN.md`, `docs/DEMO_RUN_SHEET.md` | Round 1 now seeded from the NOAA reading (removed `DEV_SEED`); added debug-only `?seed=<n>` (shows DEBUG SEED); tests for seed-from-weather | ____ |
-| 2026-10-24 (this branch) | final-fixes | `docs/AI_USAGE.md`, `docs/ART_GUIDE.md`, `docs/DATA_SOURCES.md`, `docs/DEMO_RUN_SHEET.md`, `docs/team/*.md`, `CLAUDE.md`, `README.md` | Rebuilt the AI log; fixed stale docs and CLAUDE.md sections 4/5/9; README sections; fetched and added primary-source links | ____ |
-| 2026-10-24 (this branch) | final-fixes | `src/art/sprites.ts` | **One-time exception, needs Johnae's review:** removed the unused `solar-pad.png` import and the `solarPad` entry. No sprite data or PNG was touched; the PNG file stays | ____ |
+| 2026-10-24 21:05 | 3d58965 | `docs/AI_USAGE.md`, `docs/ART_GUIDE.md`, `docs/DATA_SOURCES.md`, `docs/DEMO_RUN_SHEET.md`, `docs/team/*.md`, `CLAUDE.md`, `README.md` | Rebuilt the AI log; fixed stale docs and CLAUDE.md sections 4/5/9; README sections; fetched and added primary-source links | ____ |
+| 2026-10-24 21:05 | 3d58965 | `src/art/sprites.ts` | **One-time exception, needs Johnae's review:** removed the unused `solar-pad.png` import and the `solarPad` entry. No sprite data or PNG was touched; the PNG file stays | ____ |
 | 2026-10-24 21:07 | 267e059 | `src/game/sim/planRound.ts`, `sim.test.ts` | Drill levels cycle S2 -> S3 -> S4 -> S5 -> S2 | ____ |
-| 2026-10-24 (this branch) | final-fixes | `src/audio/lines.ts`, `lines.test.ts`, `src/game/Game.ts`, `src/Play.tsx`, `src/game/tunables.ts` | Added the drill-notice line and 7 fact-card lines (spoken at 3 s into RESULTS) with captions; plays through the existing voice fallback chain. **The 8 new mp3s are not baked yet** (until then the browser voice speaks them) | ____ |
+| 2026-10-24 21:08 | a955fff | `src/audio/lines.ts`, `lines.test.ts`, `src/game/Game.ts`, `src/Play.tsx`, `src/game/tunables.ts` | Added the drill-notice line and 7 fact-card lines (spoken at 3 s into RESULTS) with captions; plays through the existing voice fallback chain. **The 8 new mp3s are not baked yet** (until then the browser voice speaks them) | ____ |
 
 ## Audio generated with ElevenLabs
 
