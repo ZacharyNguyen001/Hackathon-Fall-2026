@@ -44,7 +44,6 @@ Each teammate has a step-by-step guide in [`docs/team/`](docs/team/00-START-HERE
 | `src/shared/contracts.ts` | Shared data shapes (types) |
 | `*.test.ts` | Automatic tests (`npm test`) |
 | `docs/` | AI usage log, plain-English walkthrough, data sources, art guide |
-| `mars-wind-loop.mp3` | Mars Ambience Sound Effect (credit: NASA)
 
 ## Not done yet
 Dust storm round, live NOAA fetch (currently saved samples), ElevenLabs baked voice and sound effects, real sound effects, human-made art, local coin saving, demo script.
