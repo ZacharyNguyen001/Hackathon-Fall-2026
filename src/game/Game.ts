@@ -12,7 +12,7 @@ import {
 } from './tunables'
 import { generateMap } from './world/mapgen'
 import { gameGravity } from './world/bodies'
-import { T_EMPTY } from './world/tiles'
+import { T_EMPTY, T_LEDGE } from './world/tiles'
 import { planRound } from './sim/planRound'
 import { RoundMachine } from './sim/roundMachine'
 import { doseRate, isEvac, ramp } from './sim/dose'
@@ -154,9 +154,8 @@ export class Game {
     if (move !== 0) this.facingLeft = move < 0
     const jump = this.keys.has('Space') || this.keys.has('ArrowUp') || this.keys.has('KeyW')
     const wasOnGround = this.player.onGround
-    if(jump && wasOnGround)
-    {
-        playSfx('jump', 0.7)
+    if (jump && wasOnGround) {
+      playSfx('jump', 0.7)
     }
     step(this.player, this.map.tiles, dt, move, jump, gameGravity(this.plan.body))
 
@@ -164,11 +163,10 @@ export class Game {
     const cx = this.player.x + PLAYER_W / 2, cy = this.player.y + PLAYER_H / 2
     for (const c of this.map.coins) {
       if (this.got.has(c.id)) continue
-      if (Math.hypot(cx - (c.tx * TILE_PX + 4), cy - (c.ty * TILE_PX + 4)) < COIN_RADIUS_PX + 3) 
-        {
-          this.got.add(c.id)
-          playSfx('coin')
-        }
+      if (Math.hypot(cx - (c.tx * TILE_PX + 4), cy - (c.ty * TILE_PX + 4)) < COIN_RADIUS_PX + 3) {
+        this.got.add(c.id)
+        playSfx('coin')
+      }
     }
     // Which shelter (if any) is the player's center in? Use the best-shielding one.
     this.shield = SHIELD_OUTSIDE
@@ -255,6 +253,7 @@ export class Game {
     c.fillRect(0, 0, LOGICAL_W, LOGICAL_H)
 
     const groundImage = sprite(this.plan.body === 'mars' ? 'mars_ground' : 'moon_ground')
+    const ledgeImage = sprite(this.plan.body === 'mars' ? 'mars_ledge' : 'moon_ledge')
     for (let y = 0; y < MAP_H; y++)
       for (let x = 0; x < MAP_W; x++) {
         const t = this.map.tiles[y * MAP_W + x]
@@ -263,6 +262,14 @@ export class Game {
         const tileY = y * TILE_PX
         if (t === 1 && groundImage) {
           c.drawImage(groundImage, tileX, tileY, TILE_PX, TILE_PX)
+        } else if (t === T_LEDGE && ledgeImage) {
+          const previousTile = x > 0 ? this.map.tiles[y * MAP_W + x - 1] : T_EMPTY
+          if (previousTile !== T_LEDGE) {
+            let widthTiles = 1
+            while (x + widthTiles < MAP_W && this.map.tiles[y * MAP_W + x + widthTiles] === T_LEDGE)
+              widthTiles++
+            c.drawImage(ledgeImage, tileX, tileY, widthTiles * TILE_PX, TILE_PX)
+          }
         } else {
           c.fillStyle = t === 1 ? pal.ground : pal.ledge
           c.fillRect(tileX, tileY, TILE_PX, TILE_PX)
@@ -278,9 +285,9 @@ export class Game {
       if (image) {
         c.drawImage(image, x, y)
       } else {
-        c.fillStyle = 
-        s.kind === 'storm_shelter' ? '#2a8f8f' : 
-        s.kind === 'airlock' ? '#c9a227' : '#6b7a99'
+        c.fillStyle =
+          s.kind === 'storm_shelter' ? '#2a8f8f' :
+            s.kind === 'airlock' ? '#c9a227' : '#6b7a99'
         c.fillRect(x, y, s.tw * TILE_PX, s.th * TILE_PX)
         c.fillStyle = 'rgba(0,0,0,0.35)'
         c.fillRect(x + 2, y + 2, s.tw * TILE_PX - 4, s.th * TILE_PX - 4)
@@ -315,9 +322,9 @@ export class Game {
       } else {
         c.drawImage(playerImage, x, y)
       }
-    }  else {
-       c.fillStyle = this.alive ? '#f2f2f2' : '#555'
-       c.fillRect(Math.round(this.player.x), Math.round(this.player.y), PLAYER_W, PLAYER_H)
+    } else {
+      c.fillStyle = this.alive ? '#f2f2f2' : '#555'
+      c.fillRect(Math.round(this.player.x), Math.round(this.player.y), PLAYER_W, PLAYER_H)
 
     }
 
