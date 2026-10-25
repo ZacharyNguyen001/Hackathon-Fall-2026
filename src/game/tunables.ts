@@ -58,6 +58,3 @@ export const HEIGHT_CTRL_SPACING = 6 // GAME VALUE (columns between height contr
 export const GROUND_MIN = 4 // GAME VALUE (tiles above bottom)
 export const GROUND_MAX = 9 // GAME VALUE
 export const MAX_MAP_RETRIES = 20 // GAME VALUE
-
-// ---- Dev ----
-export const DEV_SEED = 20261024 // GAME VALUE (fixed seed for slice 1)

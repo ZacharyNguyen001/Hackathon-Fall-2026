@@ -14,7 +14,7 @@
 ## Real data
 - `liveWeather.ts` fetches NOAA's current S-level and proton flux straight from the browser (CORS is open) when the page loads and then at most every 5 minutes. `noaa.ts` parses the JSON defensively and returns null for anything odd. If the fetch fails, `sampleWeather.ts` uses real responses we saved in `noaa-sample/`.
 - The HUD says DRILL when the real sun is quiet (S0). Only a real S1 or higher is called LIVE. It also shows `live`/`sample` and the time NOAA made the reading.
-- The map seed is a hash of that reading time + round number + body, so the same reading gives the same map.
+- The map seed is a hash of that reading time + round number + body, so the same reading gives the same map. This includes round 1 (it uses the live reading if it has arrived when you click Start, otherwise the saved sample's time). `?seed=<number>` is a debug-only override for round 1.
 - `facts.ts` holds the only real-world facts the results card may show, each with a source and a status (real / derived / proposed). The "What's real vs. tuned?" button on the results card lists which numbers are real, proposed or tuned.
 
 ## Sound

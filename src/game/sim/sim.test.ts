@@ -10,6 +10,7 @@ import { step, type Body2D } from './physics'
 import { generateMap } from '../world/mapgen'
 import { gameGravity } from '../world/bodies'
 import { MAP_H, MAP_W } from '../tunables'
+import { seedFor } from '../world/rng'
 
 const quiet = { sLevel: 0, protonFlux10MeV: 0.3, kp: null, observedAt: 't', fetchedAt: 't', source: 'sample' } as const
 
@@ -44,6 +45,13 @@ describe('planRound', () => {
     expect(planRound(1, quiet).isDrill).toBe(true)
     const live = planRound(1, { ...quiet, sLevel: 3 })
     expect(live.isDrill).toBe(false); expect(live.level).toBe(3)
+  })
+  it('round 1 seed comes from the weather reading (observedAt), not a fixed number', () => {
+    expect(planRound(1, quiet).seed).toBe(seedFor('t', 1, 'mars'))
+    expect(planRound(1, { ...quiet, observedAt: 'u' }).seed).not.toBe(planRound(1, quiet).seed)
+  })
+  it('a debug seed override still wins', () => {
+    expect(planRound(1, quiet, 123).seed).toBe(123)
   })
 })
 

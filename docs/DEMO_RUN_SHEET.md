@@ -8,7 +8,7 @@ Pick ONE person to drive the game and ONE to talk. Rehearse it twice.
 - [ ] The HUD line says `live` (or `sample` if the internet is bad; see "If something breaks").
 - [ ] `git status` is clean and the running build is the `submission` tag.
 - [ ] A **60-second screen recording** of a full round is saved on every laptop (backup).
-- [ ] Do **not** use `?fast=1` for the real demo (it is a test shortcut and changes the pacing).
+- [ ] Do **not** use `?fast=1` or `?seed=<number>` for the real demo. Both are debug-only: `?fast=1` changes the pacing; `?seed=<number>` replaces the NOAA-derived map seed for round 1 only (the HUD shows DEBUG SEED) and is only for rehearsing a specific map.
 - [ ] Join the video call 15 minutes early if remote judges.
 
 ## Script (times are targets)
