@@ -1,3 +1,5 @@
+TODO: reformat to organizer template
+
 # Storm Shelter (GeauxHack 2026, "Life in Space")
 
 A browser 2D platformer in the style of "Natural Disaster Survival", set on the Moon and Mars.
@@ -5,6 +7,42 @@ Every round you get 20 seconds to explore, a voiced warning plays, then a radiat
 right shelter before your dose hits the limit. Doses and facts are real or clearly labeled as game values.
 
 Run it: `npm install` then `npm run dev` (open the printed address). Tests and typecheck: `npm run validate`.
+
+## Team
+Jaydon, Zach and Johnae. (Garri was on the team at the start and left during the event; his dust-storm and demo-script tasks were retired.)
+
+## Live demo
+https://zacharynguyen001.github.io/Hackathon-Fall-2026/
+
+## ElevenLabs (API 2)
+- **What we generated:** 12 voice lines (mission-control warnings S1-S5 for drill and live, EVAC, all-clear) and 5 sound effects (Geiger click, klaxon, coin, jump, Moon suit hum). The Mars wind loop is a NASA recording, not AI-generated.
+- **Why it is baked ahead of time:** the site is static (no backend), so baking keeps the API key out of the browser, adds no delay at the moment of the warning, and works offline. Fallback if a clip is missing or slow: the browser's built-in voice, and the caption is always shown.
+- **Voice:** [VOICE NAME — Jaydon fill in] (a premade library voice; no cloning).
+- **How to re-bake:** put `ELEVENLABS_API_KEY` and `ELEVENLABS_VOICE_ID` in a git-ignored `.env.bake.local`, then run
+  `node --env-file=.env.bake.local --experimental-strip-types scripts/bake-audio.ts` (voice, into `public/audio/voice/`) and
+  `node --env-file=.env.bake.local --experimental-strip-types scripts/bake-sfx.ts` (effects, into `public/audio/sfx/`).
+  Both scripts skip files that already exist (delete an mp3 to regenerate it), then commit the mp3 files.
+
+## External APIs
+Exactly two: **NOAA SWPC** (space-weather data, fetched from the browser) and **ElevenLabs** (voice and sound effects, baked ahead of time). GitHub Actions and GitHub Pages are CI/hosting for the static site, not APIs the game calls. `src/rules.test.ts` fails if any other web address appears in our code.
+
+## Project history note
+We started from the `create-deepspace` scaffold (commit 9f04037, boilerplate). We removed it in 3ab1517 and the final project uses no backend.
+
+## AI usage summary
+Claude Code helped write much of the code and docs. Every AI-assisted file and change is listed, with the real commit time and a reviewer column, in [`docs/AI_USAGE.md`](docs/AI_USAGE.md), along with every ElevenLabs-generated audio file. No images or video were AI-generated; all art is hand-drawn by Johnae Avery.
+
+## Who did what
+Drafted from the git history and `docs/team/` assignments.
+
+| Person | Work |
+|---|---|
+| Jaydon | Game engine, round flow, map generation, dose model, live NOAA data, ElevenLabs voice (bake script + playback), lead, repo docs |
+| Zach | Sound effects (bake script, player, game hooks), merging, GitHub Pages deploy |
+| Johnae | All art (sprites, palettes, ground tiles), saved coins and career dose |
+| Garri | Left the team during the event |
+
+Confirmed by team: ____
 
 ## Team guides
 Each teammate has a step-by-step guide in [`docs/team/`](docs/team/00-START-HERE.md): start with `00-START-HERE.md`, then your own file (Jaydon: NOAA + ElevenLabs, Zach: sound effects, Johnae: saved coins + art).
