@@ -14,7 +14,7 @@
 | 2026-10-24 11:44 | package.json, vite.config.ts, tsconfig.json, index.html, src/main.tsx, src/Play.tsx | Moved the app to the repo root as a plain Vite+React+TS project; removed the DeepSpace scaffold | TBD |
 | 2026-10-24 13:02 | docs/team/*.md, docs/ART_GUIDE.md, README.md | Wrote beginner step-by-step guides for each teammate (docs only, no game code) | TBD |
 
-| date-time | file | what ElevenLabs did | human reviewer |
+| date-time | file | what ElevenLabs AI did | human reviewer |
 | 2026-10-24 4:45 | klaxon.mp3, geiger-click.mp3| sound effects for the klaxon warning and the geiger counter clicks
 | 2026-10-24 5:25 | jump.mp3, moon-suit-hum-loop.mp3 | sound effects for when the player character jumps
 | 2026-10-24 7:25 | coin.mp3 | sound effect for picking up the coins around the level
