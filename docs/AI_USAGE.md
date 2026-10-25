@@ -26,3 +26,4 @@
 | 2026-10-24 20:29 | src/Play.tsx | Results card shows saved totals and career dose vs the proposed limit; added the "What's real vs. tuned?" panel; buttons release focus so Space still jumps | TBD |
 | 2026-10-24 20:29 | src/rules.test.ts, vite.config.ts | Added the test that allows only NOAA and ElevenLabs web addresses; relative base path for hosting anywhere | TBD |
 | 2026-10-24 20:29 | README.md, docs/EXPLAIN.md, docs/DEMO_RUN_SHEET.md | Brought docs up to date with the merged code | TBD |
+| 2026-10-24 20:35 | .github/workflows/deploy.yml, scripts/bake-sfx.ts, README.md | Added GitHub Pages deploy workflow (CI config); removed the mars-wind-loop prompt from the SFX script (it is a NASA recording); README NASA credit placeholder | TBD |

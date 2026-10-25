@@ -11,7 +11,7 @@ const SOUNDS = [
   { file: 'klaxon', text: 'space station emergency klaxon alarm, three short blasts', seconds: 3, loop: false },
   { file: 'coin', text: 'quiet and soft retro 8-bit coin pickup blip', seconds: 0.5, loop: false },
   { file: 'jump', text: 'soft retro 8-bit jump boing', seconds: 0.5, loop: false },
-  { file: 'mars-wind-loop', text: 'thin low wind blowing over a quiet dusty desert, seamless', seconds: 10, loop: true },
+  // NOTE: mars-wind-loop.mp3 is a NASA recording, not generated. Do not add it here, or this script could replace it with an AI sound.
   { file: 'moon-suit-hum-loop', text: 'quiet ambient electrical hum inside a spacesuit helmet, seamless', seconds: 10, loop: true },
 ]
 

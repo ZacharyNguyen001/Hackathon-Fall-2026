@@ -51,11 +51,13 @@ Each teammate has a step-by-step guide in [`docs/team/`](docs/team/00-START-HERE
 | `scripts/bake-audio.ts`, `bake-sfx.ts` | Run locally with a git-ignored key to make the ElevenLabs audio files |
 
 ## Build and host
+Pushing to `main` publishes the site to GitHub Pages through `.github/workflows/deploy.yml` (repo owner: Settings -> Pages -> Source = **GitHub Actions**, once). The hosted copy is always built from the committed code; for submission, make sure the last push to `main` is the commit tagged `submission`.
+
 `npm install`, then `npm run build` makes the static site in `dist/` (paths are relative, so it works from any folder). The live demo must be built from the tagged commit (`submission`).
 
 ## Credits
 - **Voice and sound effects:** generated with ElevenLabs (premade library voice, no cloning), baked ahead of time by the scripts in `scripts/`. Logged in `docs/AI_USAGE.md`.
-- **`mars-wind-loop.mp3`:** Mars ambience sound effect (credit: NASA).
+- **`mars-wind-loop.mp3`:** Mars ambience, a NASA recording (not AI-generated). Source page and usage terms: TODO (Zach: paste the NASA link and the licence/usage-guideline link here).
 - **Art (sprites and palettes):** Johnae Avery, drawn by hand.
 - **Font:** Bitcount (OFL-1.1) via `@fontsource-variable/bitcount`.
 - **Space-weather data:** NOAA Space Weather Prediction Center (SWPC).
