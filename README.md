@@ -57,7 +57,7 @@ Pushing to `main` publishes the site to GitHub Pages through `.github/workflows/
 
 ## Credits
 - **Voice and sound effects:** generated with ElevenLabs (premade library voice, no cloning), baked ahead of time by the scripts in `scripts/`. Logged in `docs/AI_USAGE.md`.
-- **`mars-wind-loop.mp3`:** Mars ambience, a NASA recording (not AI-generated). Source page and usage terms: TODO (Zach: paste the NASA link and the licence/usage-guideline link here).
+- **`mars-wind-loop.mp3`:** Mars ambience, a NASA recording (not AI-generated). Source page and usage terms: https://science.nasa.gov/resource/perseverance-rovers-supercam-records-wind-on-mars https://www.nasa.gov/nasa-brand-center/images-and-media/
 - **Art (sprites and palettes):** Johnae Avery, drawn by hand.
 - **Font:** Bitcount (OFL-1.1) via `@fontsource-variable/bitcount`.
 - **Space-weather data:** NOAA Space Weather Prediction Center (SWPC).
