@@ -28,7 +28,7 @@ Where a row says "adapted from Claude-written snippets in the planning guides (c
 | 2026-10-24 15:55 | cff9968 | `scripts/bake-audio.ts` | ElevenLabs text-to-speech bake script. Adapted from Claude-written snippets in the planning guides (commit 29e8353, since deleted) | ____ |
 | 2026-10-24 15:55 | cff9968 | `src/audio/voice.ts` (first version) | Play baked clip, fall back to browser voice. Adapted from Claude-written snippets in the planning guides (commit 29e8353, since deleted); rewritten by Claude in a8bcd96 (next section) | ____ |
 | 2026-10-24 15:55 | cff9968 | `src/Play.tsx`, `src/game/Game.ts`, `src/audio/lines.ts` | Teammate-added hooks: NOAA refresh every 5 min (`fetchLiveWeather`, `setWeather`), `say()` -> `playLine`, `warningClipId` / `VOICE_LINES`. From the planning guides (commit 29e8353, since deleted) | ____ |
-| 2026-10-24 16:21 | ab1fe42 | `scripts/bake-sfx.ts` | ElevenLabs sound-effects bake script. Adapted from Claude-written snippets in the planning guides (commit 29e8353, since deleted) | ____ |
+| 2026-10-24 16:21 | ab1fe42 | `scripts/bake-sfx.ts` | ElevenLabs sound-effects bake script. Adapted from Claude-written snippets in the planning guides (commit 29e8353, since deleted) | Zachary |
 | 2026-10-24 16:21 | dd1e5e9 | `src/audio/sfx.ts` | Web Audio sound-effect player and loops. Adapted from Claude-written snippets in the planning guides (commit 29e8353, since deleted) | ____ |
 | 2026-10-24 16:43 | 158465b | `CLAUDE.md`, `README.md`, `docs/ART_GUIDE.md`, `docs/DEMO_RUN_SHEET.md` | Retired the dust storm and Garri's guide (docs only); wrote the demo run sheet | ____ |
 | 2026-10-24 16:55 | bceda96, ed21f54 | `src/game/Game.ts` | Teammate-added sfx hooks (loadSfx, Geiger click, klaxon, loops). From the planning guides (commit 29e8353, since deleted) | Johnae |
@@ -41,15 +41,15 @@ Where a row says "adapted from Claude-written snippets in the planning guides (c
 | 2026-10-24 20:29 | a8bcd96 | `src/audio/voice.ts` | Rewrote so an old line's timer can't speak late and the clip and browser voice can't overlap; added preloading | ____ |
 | 2026-10-24 20:29 | a8bcd96 | `src/Play.tsx` | Results card shows saved totals and career dose vs the proposed limit; "What's real vs. tuned?" panel; buttons release focus so Space still jumps | ____ |
 | 2026-10-24 20:29 | a8bcd96 | `src/rules.test.ts`, `vite.config.ts` | Test that allows only NOAA and ElevenLabs web addresses; relative base path for hosting | ____ |
-| 2026-10-24 20:29 | a8bcd96 | `README.md`, `docs/EXPLAIN.md`, `docs/DEMO_RUN_SHEET.md` | Brought docs up to date with the merged code | ____ |
-| 2026-10-24 20:35 | d9283b2 | `.github/workflows/deploy.yml` | GitHub Pages deploy workflow (CI config, no theme content) | ____ |
-| 2026-10-24 20:35 | d9283b2 | `scripts/bake-sfx.ts`, `README.md` | Removed the mars-wind-loop prompt from the SFX script (it is a NASA recording); README NASA credit placeholder | ____ |
+| 2026-10-24 20:29 | a8bcd96 | `README.md`, `docs/EXPLAIN.md`, `docs/DEMO_RUN_SHEET.md` | Brought docs up to date with the merged code | Zachary |
+| 2026-10-24 20:35 | d9283b2 | `.github/workflows/deploy.yml` | GitHub Pages deploy workflow (CI config, no theme content) | Zachary |
+| 2026-10-24 20:35 | d9283b2 | `scripts/bake-sfx.ts`, `README.md` | Removed the mars-wind-loop prompt from the SFX script (it is a NASA recording); README NASA credit placeholder | Zachary |
 | 2026-10-24 21:05 | cbda5b3 | `src/game/Game.ts`, `src/Play.tsx`, `src/game/tunables.ts`, `src/game/sim/sim.test.ts`, `docs/EXPLAIN.md`, `docs/DEMO_RUN_SHEET.md` | Round 1 now seeded from the NOAA reading (removed `DEV_SEED`); added debug-only `?seed=<n>` (shows DEBUG SEED); tests for seed-from-weather | ____ |
-| 2026-10-24 21:05 | 3d58965 | `docs/AI_USAGE.md`, `docs/ART_GUIDE.md`, `docs/DATA_SOURCES.md`, `docs/DEMO_RUN_SHEET.md`, `CLAUDE.md`, `README.md` | Rebuilt the AI log; fixed stale docs and CLAUDE.md sections 4/5/9; README sections; fetched and added primary-source links | ____ |
+| 2026-10-24 21:05 | 3d58965 | `docs/AI_USAGE.md`, `docs/ART_GUIDE.md`, `docs/DATA_SOURCES.md`, `docs/DEMO_RUN_SHEET.md`, `CLAUDE.md`, `README.md` | Rebuilt the AI log; fixed stale docs and CLAUDE.md sections 4/5/9; README sections; fetched and added primary-source links | Zachary |
 | 2026-10-24 21:05 | 3d58965 | `src/art/sprites.ts` | **One-time exception, needs Johnae's review:** removed the unused `solar-pad.png` import and the `solarPad` entry. No sprite data or PNG was touched; the PNG file stays | Johnae |
 | 2026-10-24 21:07 | 267e059 | `src/game/sim/planRound.ts`, `sim.test.ts` | Drill levels cycle S2 -> S3 -> S4 -> S5 -> S2 | ____ |
 | 2026-10-24 21:08 | a955fff | `src/audio/lines.ts`, `lines.test.ts`, `src/game/Game.ts`, `src/Play.tsx`, `src/game/tunables.ts` | Added the drill-notice line and 7 fact-card lines (spoken at 3 s into RESULTS) with captions; plays through the existing voice fallback chain. The 8 new mp3s were baked afterwards by Jaydon | ____ |
-| 2026-10-24 (final-fixes) | final-fixes | the per-teammate planning guides (deleted), `README.md`, `docs/ART_GUIDE.md`, `docs/AI_USAGE.md` | Removed the planning guides and every reference to them | ____ |
+| 2026-10-24 (final-fixes) | final-fixes | the per-teammate planning guides (deleted), `README.md`, `docs/ART_GUIDE.md`, `docs/AI_USAGE.md` | Removed the planning guides and every reference to them | Zachary |
 
 ## Audio generated with ElevenLabs
 
@@ -64,11 +64,11 @@ Made locally by a human running the bake scripts with their own key; the mp3 fil
 ### Sound effects (5) — `scripts/bake-sfx.ts`, endpoint `/v1/sound-generation`
 | file | first added | regenerated | human reviewer |
 |---|---|---|---|
-| `geiger-click.mp3` | ab1fe42 (16:21) | - | ____ |
-| `klaxon.mp3` | ab1fe42 (16:21) | 7a76e65 (17:07) | ____ |
-| `jump.mp3` | ab1fe42 (16:21) | f9321c9 (18:07) | ____ |
-| `moon-suit-hum-loop.mp3` | ab1fe42 (16:21) | f9321c9 (18:07) | ____ |
-| `coin.mp3` | ab1fe42 (16:21) | c1fa62a (19:11) | ____ |
+| `geiger-click.mp3` | ab1fe42 (16:21) | - | Zachary |
+| `klaxon.mp3` | ab1fe42 (16:21) | 7a76e65 (17:07) | Zachary |
+| `jump.mp3` | ab1fe42 (16:21) | f9321c9 (18:07) | Zachary |
+| `moon-suit-hum-loop.mp3` | ab1fe42 (16:21) | f9321c9 (18:07) | Zachary |
+| `coin.mp3` | ab1fe42 (16:21) | c1fa62a (19:11) | Zachary |
 
 ### NOT AI-generated
 - `public/audio/sfx/mars-wind-loop.mp3`: a NASA Perseverance SuperCam wind recording. Source and usage terms are linked in the README credits.
