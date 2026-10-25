@@ -43,7 +43,11 @@ Where a row says "adapted from Claude-written snippets in docs/team/*.md", the t
 | 2026-10-24 20:29 | a8bcd96 | `README.md`, `docs/EXPLAIN.md`, `docs/DEMO_RUN_SHEET.md` | Brought docs up to date with the merged code | ____ |
 | 2026-10-24 20:35 | d9283b2 | `.github/workflows/deploy.yml` | GitHub Pages deploy workflow (CI config, no theme content) | ____ |
 | 2026-10-24 20:35 | d9283b2 | `scripts/bake-sfx.ts`, `README.md` | Removed the mars-wind-loop prompt from the SFX script (it is a NASA recording); README NASA credit placeholder | ____ |
-| 2026-10-24 21:0x | final-fixes: seed | `src/game/Game.ts`, `src/Play.tsx`, `src/game/tunables.ts`, `src/game/sim/sim.test.ts`, `docs/EXPLAIN.md`, `docs/DEMO_RUN_SHEET.md` | Round 1 now seeded from the NOAA reading (removed `DEV_SEED`); added debug-only `?seed=<n>` (shows DEBUG SEED); tests for seed-from-weather | ____ |
+| 2026-10-24 21:05 | cbda5b3 | `src/game/Game.ts`, `src/Play.tsx`, `src/game/tunables.ts`, `src/game/sim/sim.test.ts`, `docs/EXPLAIN.md`, `docs/DEMO_RUN_SHEET.md` | Round 1 now seeded from the NOAA reading (removed `DEV_SEED`); added debug-only `?seed=<n>` (shows DEBUG SEED); tests for seed-from-weather | ____ |
+| 2026-10-24 (this branch) | final-fixes | `docs/AI_USAGE.md`, `docs/ART_GUIDE.md`, `docs/DATA_SOURCES.md`, `docs/DEMO_RUN_SHEET.md`, `docs/team/*.md`, `CLAUDE.md`, `README.md` | Rebuilt the AI log; fixed stale docs and CLAUDE.md sections 4/5/9; README sections; fetched and added primary-source links | ____ |
+| 2026-10-24 (this branch) | final-fixes | `src/art/sprites.ts` | **One-time exception, needs Johnae's review:** removed the unused `solar-pad.png` import and the `solarPad` entry. No sprite data or PNG was touched; the PNG file stays | ____ |
+| 2026-10-24 21:07 | 267e059 | `src/game/sim/planRound.ts`, `sim.test.ts` | Drill levels cycle S2 -> S3 -> S4 -> S5 -> S2 | ____ |
+| 2026-10-24 (this branch) | final-fixes | `src/audio/lines.ts`, `lines.test.ts`, `src/game/Game.ts`, `src/Play.tsx`, `src/game/tunables.ts` | Added the drill-notice line and 7 fact-card lines (spoken at 3 s into RESULTS) with captions; plays through the existing voice fallback chain. **The 8 new mp3s are not baked yet** (until then the browser voice speaks them) | ____ |
 
 ## Audio generated with ElevenLabs
 
@@ -51,6 +55,9 @@ Made locally by a human running the bake scripts with their own key; the mp3 fil
 
 ### Voice (12 clips) — `scripts/bake-audio.ts`, model `eleven_multilingual_v2`, committed in 629a161 (2026-10-24 16:06)
 `solar-warning-s1-drill`, `-s1-live`, `-s2-drill`, `-s2-live`, `-s3-drill`, `-s3-live`, `-s4-drill`, `-s4-live`, `-s5-drill`, `-s5-live`, `evac`, `all-clear` (all `.mp3` in `public/audio/voice/`). Text comes from `src/audio/lines.ts`.
+
+### Planned, NOT yet baked (8 more voice clips)
+`drill-notice`, `fact-spe-limit`, `fact-career`, `fact-shield`, `fact-water`, `fact-sscale`, `fact-rad-surface`, `fact-artemis-turn` (same script, `eleven_multilingual_v2`). This section moves up to the table above once Jaydon bakes and commits them.
 
 ### Sound effects (5) — `scripts/bake-sfx.ts`, endpoint `/v1/sound-generation`
 | file | first added | regenerated | human reviewer |

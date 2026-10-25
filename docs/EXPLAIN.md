@@ -20,6 +20,7 @@
 ## Sound
 - `scripts/bake-audio.ts` and `bake-sfx.ts` (run on a teammate's computer with a git-ignored ElevenLabs key) create the mp3 files in `public/audio/`. The key never reaches the browser.
 - `voice.ts` plays a baked clip for each warning / evac / all-clear line. If the clip is missing, errors, or does not start within 1.5 s, it uses the browser's built-in voice. Clips are preloaded after the click-to-start. Only one voice line plays at a time.
+- New voice lines: a drill notice at the start of each drill round's EXPLORE phase, and the round's fact card read aloud 3 s into RESULTS. Both show a caption at the bottom of the screen and use the same `playLine` fallback chain. Drill levels now cycle S2, S3, S4, S5, then repeat.
 - `sfx.ts` plays the effects (Geiger click, klaxon, coin, jump) and the looping Mars wind / Moon suit hum. Mute silences everything.
 
 ## Saving and art

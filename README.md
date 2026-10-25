@@ -15,7 +15,7 @@ Jaydon, Zach and Johnae. (Garri was on the team at the start and left during the
 https://zacharynguyen001.github.io/Hackathon-Fall-2026/
 
 ## ElevenLabs (API 2)
-- **What we generated:** 12 voice lines (mission-control warnings S1-S5 for drill and live, EVAC, all-clear) and 5 sound effects (Geiger click, klaxon, coin, jump, Moon suit hum). The Mars wind loop is a NASA recording, not AI-generated.
+- **What we generated:** 12 voice lines baked so far (8 more, a drill notice and the 7 fact cards, are in the code and waiting to be baked) (mission-control warnings S1-S5 for drill and live, EVAC, all-clear) and 5 sound effects (Geiger click, klaxon, coin, jump, Moon suit hum). The Mars wind loop is a NASA recording, not AI-generated.
 - **Why it is baked ahead of time:** the site is static (no backend), so baking keeps the API key out of the browser, adds no delay at the moment of the warning, and works offline. Fallback if a clip is missing or slow: the browser's built-in voice, and the caption is always shown.
 - **Voice:** [VOICE NAME — Jaydon fill in] (a premade library voice; no cloning).
 - **How to re-bake:** put `ELEVENLABS_API_KEY` and `ELEVENLABS_VOICE_ID` in a git-ignored `.env.bake.local`, then run

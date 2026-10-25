@@ -17,7 +17,7 @@ export default function Play() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const gameRef = useRef<Game | null>(null)
   const [started, setStarted] = useState(false)
-  const [ui, setUi] = useState<UiState>({ phase: 'INTERMISSION', banner: null, results: null, muted: false })
+  const [ui, setUi] = useState<UiState>({ phase: 'INTERMISSION', banner: null, caption: null, results: null, muted: false })
   const [scale, setScale] = useState(2)
   const [showTuned, setShowTuned] = useState(false) // the "real vs tuned" panel on the results card
   
@@ -64,6 +64,11 @@ export default function Play() {
         {ui.banner && (
           <div role="alert" style={{ position: 'absolute', left: 0, right: 0, top: 24 * scale, padding: 6 * scale, background: 'rgba(160,0,0,0.85)', color: '#fff', textAlign: 'center', fontSize: 5 * scale }}>
             {ui.banner}
+          </div>
+        )}
+        {ui.caption && (
+          <div style={{ position: 'absolute', left: 8 * scale, right: 8 * scale, bottom: 18 * scale, padding: 2 * scale, background: 'rgba(0,0,0,0.75)', color: '#fff', textAlign: 'center', fontSize: 4 * scale }}>
+            {ui.caption}
           </div>
         )}
         {ui.results && ui.phase === 'RESULTS' && (
