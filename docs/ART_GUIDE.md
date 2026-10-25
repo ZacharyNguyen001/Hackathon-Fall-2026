@@ -14,7 +14,6 @@ Full step-by-step instructions (including the loader code) are in **`docs/team/j
 | `habitat.png` | 48 x 32 |
 | `storm-shelter.png` | 64 x 40 |
 | `airlock.png` | 32 x 32 |
-| `solar-pad.png` | 24 x 8 |
 | `coin.png` | 8 x 8 |
 | `ground-mars.png`, `ground-moon.png`, `ledge-mars.png`, `ledge-moon.png` | 8 x 8 each (optional) |
 
@@ -22,7 +21,7 @@ Put the artist's name in a comment at the top of `palettes.ts` and `sprites.ts`.
 The screen is 384 x 216 game pixels, scaled up by a whole number, so draw small and crisp.
 
 ## What the placeholders are now (`src/game/Game.ts`, search `TODO-ART`)
-Flat colored rectangles: tiles (8 x 8), player (white 5 x 10), shelters (colored boxes), solar pads (the thin dark-blue bar on Mars), coins (small yellow squares).
+Flat colored rectangles: tiles (8 x 8), player (white 5 x 10), shelters (colored boxes), coins (small yellow squares).
 
 ## How the game finds your art
 A small loader (`src/game/spriteLoader.ts`, written in Johnae's guide, Part C) draws your PNGs when they exist and keeps drawing the rectangles when a picture is missing, so the game never breaks while art is in progress.

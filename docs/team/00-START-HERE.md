@@ -4,10 +4,11 @@ Deadline: **Sunday Oct 25, 12:00 PM CDT. No code changes after that, ever.**
 Plan to stop coding around **10:30 AM Sunday** and feature-freeze **Saturday 11:59 PM**.
 
 ## Who does what
+(The dust storm and the demo-script guide were retired when a teammate left. See `docs/DEMO_RUN_SHEET.md` for the demo.)
+
 | Person | Task | Guide |
 |---|---|---|
 | Jaydon | Live NOAA data + ElevenLabs voice | `jaydon-noaa-elevenlabs.md` |
-| Garri | Dust storm round + demo script | `garri-dust-storm-and-demo.md` |
 | Zach | Sound effects (Moon and Mars) + merging pull requests | `zach-sound-effects.md` |
 | Johnae | Saving coins on this device + all the art + the art loader | `johnae-coins-and-art.md` |
 
@@ -30,7 +31,7 @@ Never work directly on `main`. Every person works on their own **branch**.
 ```
 git switch main
 git pull                                  # get everyone's latest work
-git switch -c yourname/feature            # make your branch, e.g. garri/dust-storm
+git switch -c yourname/feature            # make your branch, e.g. zach/sfx
 # ...edit files...
 npm run validate
 git add -A
@@ -48,11 +49,11 @@ If Git says "merge conflict", don't panic: use the conflict prompt in section 6.
 | Shared file | Rule |
 |---|---|
 | `src/game/Game.ts` | Only add the small "hook" lines your guide lists. Put real logic in **your own new file**. |
-| `src/game/tunables.ts` | Add your numbers at the **bottom** under a header like `// ---- Dust storm (Garri) ----`. |
+| `src/game/tunables.ts` | Add your numbers at the **bottom** under a header like `// ---- Sound effects (Zach) ----`. |
 | `src/audio/lines.ts` | Jaydon owns it. Others send him sentences. |
 | `src/Play.tsx` | Only Johnae and Jaydon, only in the spots their guides name. |
 
-Merge order (smallest first): Johnae's coins, Jaydon's NOAA, Garri's dust, Zach's sounds, Jaydon's voice, Johnae's art.
+Merge order (smallest first): Johnae's coins, Jaydon's NOAA, Zach's sounds, Jaydon's voice, Johnae's art.
 
 ## 4. Rules that can disqualify us (CLAUDE.md section 0)
 - **Only 2 outside services: NOAA and ElevenLabs.** No backend, no extra website services, no CDN fonts, no analytics.

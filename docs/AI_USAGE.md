@@ -20,3 +20,4 @@
 | 2026-10-24 7:25 | coin.mp3 | sound effect for picking up the coins around the level
 
 
+| 2026-10-24 16:43 | CLAUDE.md, README.md, docs/team/*, docs/ART_GUIDE.md, docs/DEMO_RUN_SHEET.md | Retired the dust storm and Garri's guide (docs only); wrote the demo run sheet | TBD |

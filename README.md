@@ -7,7 +7,7 @@ right shelter before your dose hits the limit. Doses and facts are real or clear
 Run it: `npm install` then `npm run dev` (open the printed address). Tests and typecheck: `npm run validate`.
 
 ## Team guides
-Each teammate has a step-by-step guide in [`docs/team/`](docs/team/00-START-HERE.md): start with `00-START-HERE.md`, then your own file (Jaydon: NOAA + ElevenLabs, Garri: dust storm + demo script, Zach: sound effects, Johnae: saved coins + art).
+Each teammate has a step-by-step guide in [`docs/team/`](docs/team/00-START-HERE.md): start with `00-START-HERE.md`, then your own file (Jaydon: NOAA + ElevenLabs, Zach: sound effects, Johnae: saved coins + art).
 
 ## Rules we follow
 - **External APIs (max 2):** NOAA SWPC (space-weather data) and ElevenLabs (voice). Nothing else, and no backend.
@@ -47,4 +47,4 @@ Each teammate has a step-by-step guide in [`docs/team/`](docs/team/00-START-HERE
 | `mars-wind-loop.mp3` | Mars Ambience Sound Effect (credit: NASA)
 
 ## Not done yet
-Dust storm round, live NOAA fetch (currently saved samples), ElevenLabs baked voice and sound effects, real sound effects, human-made art, local coin saving, demo script.
+Live NOAA fetch (currently saved samples), ElevenLabs baked voice and sound effects, real sound effects, human-made art, local coin saving, demo script.

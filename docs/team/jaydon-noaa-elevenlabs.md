@@ -109,7 +109,6 @@ export const VOICE_LINES: { id: string; text: string }[] = [
   ),
   { id: 'evac', text: evacLine },
   { id: 'all-clear', text: allClearLine },
-  // Garri will send the dust-storm sentences: add { id: 'dust-warning-1', text: '...' } etc.
 ]
 ```
 Keep sentences short and in the same tone. You choose the final wording (you own this file).
@@ -183,7 +182,6 @@ and import `playLine, stopVoice` from `../audio/voice` and `warningClipId` from 
 - evac: `this.say('evac', evacLine)`
 - all clear: `this.say('all-clear', allClearLine)`
 - In `setMuted`, replace `speechSynthesis.cancel()` with `stopVoice()`; same in `stop()`.
-Garri will add a dust call; tell them to use `this.say('dust-warning-1', line)`.
 
 ### Done when
 - The warning at 20 seconds plays the ElevenLabs voice and the banner/caption still appear.
