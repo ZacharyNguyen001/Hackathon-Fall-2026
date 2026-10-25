@@ -11,6 +11,13 @@ Pick ONE person to drive the game and ONE to talk. Rehearse it twice.
 - [ ] Do **not** use `?fast=1` or `?seed=<number>` for the real demo. Both are debug-only: `?fast=1` changes the pacing; `?seed=<number>` replaces the NOAA-derived map seed for round 1 only (the HUD shows DEBUG SEED) and is only for rehearsing a specific map.
 - [ ] Join the video call 15 minutes early if remote judges.
 
+## Clean browser profile checklist
+- [ ] Use a fresh profile or guest window (no old saved coins/career dose unless you want them; clearing site data resets them).
+- [ ] The tab and the OS are **not muted** (the game's Mute button says "Mute", not "Unmute").
+- [ ] Click **Start** once (browsers block sound until a click).
+- [ ] System and browser **volume up**; play one round's warning to confirm you hear it.
+- [ ] Window size: big enough for a 3x or larger game scale; browser zoom 100%; no scrollbars.
+
 ## Script (times are targets)
 | Time | Do | Say |
 |---|---|---|

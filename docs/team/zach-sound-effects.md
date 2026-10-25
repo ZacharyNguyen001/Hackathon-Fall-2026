@@ -1,3 +1,5 @@
+> Planning guide written before merge; snippets may differ from the final code.
+
 # Zach: sound effects (Moon and Mars) + merging + hosting
 
 Read `00-START-HERE.md` first. Branch name: `zach/sfx`. You are also the repo owner, so you **merge pull requests** and own the hosting question.

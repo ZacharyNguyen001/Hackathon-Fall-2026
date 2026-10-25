@@ -1,3 +1,5 @@
+> Planning guide written before merge; snippets may differ from the final code.
+
 # Jaydon: live NOAA data + ElevenLabs voice
 
 Read `00-START-HERE.md` first. Branch names: `jaydon/noaa`, then `jaydon/voice`.

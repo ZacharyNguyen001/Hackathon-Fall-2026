@@ -1,3 +1,5 @@
+> Planning guide written before merge; snippets may differ from the final code.
+
 # Johnae: save coins on this device + all the art + the art loader
 
 Read `00-START-HERE.md` first. Branch names: `johnae/coins` (do this FIRST, it's the smallest and gets merged first), then `johnae/art`.

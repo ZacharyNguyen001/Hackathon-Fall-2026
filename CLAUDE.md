@@ -194,7 +194,7 @@ A backend-as-a-service counts as an API, and we may use only two (NOAA and Eleve
   - `https://services.swpc.noaa.gov/json/goes/primary/integral-protons-1-day.json` → latest entry where `energy` is `">=10 MeV"`; `flux` in pfu.
   - Optional: `https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json` (Kp; handle both array-of-arrays and array-of-objects).
 - Parsing is defensive: if anything is missing or malformed, keep the previous good reading and log. If there is no good reading at all (offline, NOAA down), load `src/data/noaa-sample/*.json` (real responses saved during the hackathon) and mark `source: 'sample'`. The UI always shows the reading's timestamp and whether it is live or a saved sample.
-- **Map seed:** `seed = hash32(\`${spaceWeather.observedAt}|${roundNumber}|${body}\`)` using a small seeded PRNG (mulberry32). Same NOAA reading + same round number → same map (needed for the multiplayer stretch).
+- **Map seed:** `seed = hash32(\`${spaceWeather.observedAt}|${roundNumber}|${body}\`)` using a small seeded PRNG (mulberry32). Same NOAA reading + same round number → same map.
 - NOAA S-scale definition (for HUD + debrief): S1 starts at 10 pfu of ≥10 MeV protons, each level is 10× higher (S2 100, S3 1,000, S4 10,000, S5 100,000). At S3+, EVA astronauts should avoid radiation exposure → our "go to shelter" rule.
 
 ### Map generator requirements
@@ -214,7 +214,7 @@ all-clear, EVAC callout, and the live space-weather briefing generated from real
 - **Whitelist, don't accept free text.** Only lines built from the templates in `src/audio/lines.ts` are ever baked (S-level 1–5, direction "east"/"west", numbers rounded). This keeps the set of clips small.
 - **Cache:** the bake script skips clips that already exist, so re-running it does not spend credits.
 - **No live generation.** With no server there is no safe place for the key, so the game plays baked clips only. If the team wants live generation, a proxy would be a third-party host: ask first.
-- **Fallback chain (client, `src/audio/voice.ts`):** pre-baked mp3 in `public/audio/fallback/` → browser `speechSynthesis` → caption only. The game must never wait on audio: the banner and caption appear at t = 20 s regardless.
+- **Fallback chain (client, `src/audio/voice.ts`):** pre-baked mp3 in `public/audio/voice/` → browser `speechSynthesis` → caption only. The game must never wait on audio: the banner and caption appear at t = 20 s regardless.
 - **Pre-bake script** (`scripts/bake-audio.ts`, run locally with the key in a local, git-ignored env var): generates every fixed line (each S-level warning, all-clear, EVAC, drill notice) into `public/audio/voice/`; `scripts/bake-sfx.ts` makes the sound effects in `public/audio/sfx/`. Commit the mp3s.
 - **Briefing:** the lobby line is built from the current NOAA numbers and spoken with `speechSynthesis` (live numbers cannot be baked); the fixed lines use baked ElevenLabs audio.
 - Use premade/library voices only. Don't clone or imitate a real person's voice.
@@ -296,16 +296,16 @@ respond well to honest uncertainty — it is part of the pitch, not a weakness.
 
 ---
 
-## 9. Team roles (fill in names)
+## 9. Team roles
 
 | # | Role | Owns | Owner |
 |---|---|---|---|
-| 1 | Game | engine, physics, map gen + reachability, round machine, coin pickups | ____ |
-| 2 | Hazards + data | NOAA fetch/parser/sample, dose model, `facts.ts`, `tunables.ts` | ____ |
-| 3 | Voice + audio | `lines.ts`, bake script, SFX, `voice.ts` fallback chain, local coin storage | ____ |
-| 4 | Art, HUD, pitch | **all sprites (hand-made)**, palettes, HUD/menus/debrief UI, voice line writing + voice choice, README, Devpost, demo script, slides | ____ |
+| 1 | Game, data, voice playback, lead | engine, physics, map gen + reachability, round machine, NOAA fetch/parser/sample, dose model, `facts.ts`, `tunables.ts`, `lines.ts`, `voice.ts`, bake-audio | Jaydon |
+| 2 | Sound effects, repo/Pages | `sfx.ts`, `bake-sfx.ts`, SFX in `Game.ts`, merging, GitHub Pages deploy | Zach |
+| 3 | Art, coin saving | **all sprites (hand-made)**, palettes, sprite loader hookup, `saveCoins.ts` | Johnae |
+| 4 | Pitch (dust storm + demo script, retired) | was Garri's | Garri — left the team |
 
-Role 4 also keeps the README honest: every AI-assisted file listed, both external APIs named, art credited to humans, font and any boilerplate sources credited.
+The lead (Jaydon) keeps the README honest: every AI-assisted file listed, both external APIs named, art credited to humans, font and any boilerplate sources credited.
 
 ---
 

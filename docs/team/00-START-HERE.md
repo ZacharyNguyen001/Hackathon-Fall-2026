@@ -1,3 +1,5 @@
+> Planning guide written before merge; snippets may differ from the final code.
+
 # START HERE (everyone reads this first)
 
 Deadline: **Sunday Oct 25, 12:00 PM CDT. No code changes after that, ever.**

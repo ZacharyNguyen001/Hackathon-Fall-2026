@@ -15,7 +15,7 @@ Full step-by-step instructions (including the loader code) are in **`docs/team/j
 | `storm-shelter.png` | 64 x 40 |
 | `airlock.png` | 32 x 32 |
 | `coin.png` | 8 x 8 |
-| `ground-mars.png`, `ground-moon.png`, `ledge-mars.png`, `ledge-moon.png` | 8 x 8 each (optional) |
+| `mars-ground.png`, `moon-ground.png` | 8 x 8 each (ground tiles). Ledges have no picture: they use the palette's `ledge` color |
 
 Put the artist's name in a comment at the top of `palettes.ts` and `sprites.ts`.
 The screen is 384 x 216 game pixels, scaled up by a whole number, so draw small and crisp.
