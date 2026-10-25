@@ -50,6 +50,9 @@ describe('planRound', () => {
     expect(planRound(1, quiet).seed).toBe(seedFor('t', 1, 'mars'))
     expect(planRound(1, { ...quiet, observedAt: 'u' }).seed).not.toBe(planRound(1, quiet).seed)
   })
+  it('drill levels cycle S2, S3, S4, S5, then back to S2', () => {
+    expect([1, 2, 3, 4, 5, 6].map((n) => planRound(n, quiet).level)).toEqual([2, 3, 4, 5, 2, 3])
+  })
   it('a debug seed override still wins', () => {
     expect(planRound(1, quiet, 123).seed).toBe(123)
   })
