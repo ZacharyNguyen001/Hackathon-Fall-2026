@@ -21,6 +21,7 @@ export const EXPLORE_S = 20 // GAME VALUE
 export const WARNING_S = 12 // GAME VALUE (NOT a real flare-to-arrival time)
 export const DISASTER_S = 40 // GAME VALUE
 export const RESULTS_S = 8 // GAME VALUE
+export const FACT_VOICE_DELAY_S = 3 // GAME VALUE (seconds into RESULTS before the fact is read, so the all-clear line finishes first)
 
 // ---- Physics ----
 export const MOON_G_REAL = 1.62 // REAL: general knowledge (m/s^2)
@@ -58,6 +59,3 @@ export const HEIGHT_CTRL_SPACING = 6 // GAME VALUE (columns between height contr
 export const GROUND_MIN = 4 // GAME VALUE (tiles above bottom)
 export const GROUND_MAX = 9 // GAME VALUE
 export const MAX_MAP_RETRIES = 20 // GAME VALUE
-
-// ---- Dev ----
-export const DEV_SEED = 20261024 // GAME VALUE (fixed seed for slice 1)

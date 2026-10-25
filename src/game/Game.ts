@@ -8,7 +8,7 @@
 import type { GameMap, Phase, RoundPlan, RoundReport, SpaceWeather } from '../shared/contracts'
 import {
   DISASTER_S, LOGICAL_H, LOGICAL_W, MAP_H, MAP_W, PLAYER_H, PLAYER_W, SHIELD_OUTSIDE, SPE_LIMIT_MSV,
-  TILE_PX, WARNING_S, COIN_RADIUS_PX, GEIGER_BASE_HZ, GEIGER_MAX_HZ, PEAK_RATE_MSV_PER_S, DEV_SEED,
+  TILE_PX, WARNING_S, FACT_VOICE_DELAY_S, COIN_RADIUS_PX, GEIGER_BASE_HZ, GEIGER_MAX_HZ, PEAK_RATE_MSV_PER_S,
 } from './tunables'
 import { generateMap } from './world/mapgen'
 import { gameGravity } from './world/bodies'
@@ -20,7 +20,7 @@ import { computeCoins } from './sim/coins'
 import { step, type Body2D } from './sim/physics'
 import { FACTS, type Fact } from '../data/facts'
 import { loadSfx, playSfx, startLoop, stopLoop, setSfxMuted } from '../audio/sfx'
-import { allClearLine, evacLine, VOICE_LINES, warningClipId, warningLine } from '../audio/lines'
+import { allClearLine, drillNoticeLine, evacLine, FACT_SPOKEN, factClipId, VOICE_LINES, warningClipId, warningLine } from '../audio/lines'
 import { playLine, preloadVoice, stopVoice } from '../audio/voice'
 import { PALETTES } from '../art/palettes'
 import { SPRITES } from '../art/sprites'
@@ -31,7 +31,7 @@ export interface Results {
   survived: boolean; doseMSv: number; coins: number; totalCoins: number; careerDoseMSv: number; canSave: boolean; pickups: number; level: number; isDrill: boolean; fact: Fact
 }
 /** What React needs to draw the overlay. Emitted only when it changes (not per frame). */
-export interface UiState { phase: Phase; banner: string | null; results: Results | null; muted: boolean }
+export interface UiState { phase: Phase; banner: string | null; caption: string | null; results: Results | null; muted: boolean }
 
 export class Game {
   private ctx: CanvasRenderingContext2D
@@ -55,10 +55,11 @@ export class Game {
   private raf = 0
   private last = 0
   private acc = 0
-  private ui: UiState = { phase: 'INTERMISSION', banner: null, results: null, muted: false }
+  private ui: UiState = { phase: 'INTERMISSION', banner: null, caption: null, results: null, muted: false }
+  private factSaid = false
   private skipFirstIntermission = true
 
-  constructor(private canvas: HTMLCanvasElement, private weather: SpaceWeather, private onUi: (s: UiState) => void, private speed = 1) {
+  constructor(private canvas: HTMLCanvasElement, private weather: SpaceWeather, private onUi: (s: UiState) => void, private speed = 1, private debugSeed?: number) {
     this.ctx = canvas.getContext('2d')!
     loadSprites(SPRITES)
     try {
@@ -102,14 +103,15 @@ export class Game {
   /** MAP_LOAD: plan the round, build the map, put the player at spawn. */
   private loadRound() {
     this.roundNumber++
-    const fixedSeed = this.roundNumber === 1 ? DEV_SEED : undefined // slice 1: round 1 uses a fixed seed
+    // Round 1 is seeded from the NOAA reading like every other round. `?seed=<n>` (debug only, for rehearsal) overrides round 1.
+    const fixedSeed = this.roundNumber === 1 ? this.debugSeed : undefined
     this.plan = planRound(this.roundNumber, this.weather, fixedSeed)
     this.map = generateMap(this.plan.seed, this.plan.body)
     const s = this.map.spawn
     this.player = { x: s.tx * TILE_PX + 1, y: s.ty * TILE_PX - PLAYER_H + TILE_PX, vx: 0, vy: 0, onGround: false }
     this.alive = true; this.dose = 0; this.secondsAlive = 0; this.got.clear(); this.shield = SHIELD_OUTSIDE
-    this.roundRecorded = false
-    this.ui.banner = null; this.ui.results = null
+    this.roundRecorded = false; this.factSaid = false
+    this.ui.banner = null; this.ui.caption = null; this.ui.results = null
   }
 
   private frame = (now: number) => {
@@ -133,6 +135,15 @@ export class Game {
     const gameDt = dt * this.speed
     if ((phase === 'WARNING' || phase === 'DISASTER') && this.alive) this.secondsAlive += gameDt
     if (phase === 'DISASTER') this.applyRadiation(gameDt)
+
+    // Read the fact card aloud a few seconds into RESULTS (round time, so ?fast and mute behave).
+    if (phase === 'RESULTS' && !this.factSaid && m.elapsed >= FACT_VOICE_DELAY_S && this.ui.results) {
+      this.factSaid = true
+      const fact = this.ui.results.fact
+      this.ui.caption = fact.text
+      this.say(factClipId(fact.id), FACT_SPOKEN[fact.id] ?? fact.text)
+      this.push()
+    }
 
     const next = m.tick(dt)
     if (next) this.enterPhase(next)
@@ -185,7 +196,12 @@ export class Game {
   private enterPhase(p: Phase) {
     this.ui.phase = p
     if (p === 'INTERMISSION') this.loadRound()
+    if (p === 'EXPLORE' && this.plan.isDrill) { // tell the player (in voice and caption) that this round is a drill
+      this.ui.caption = drillNoticeLine
+      this.say('drill-notice', drillNoticeLine)
+    }
     if (p === 'WARNING') { // t = 20 s: banner + caption always appear; voice plays if it can
+      this.ui.caption = null // the red banner takes over
       const line = warningLine(this.plan)
       this.ui.banner = line
       this.say(warningClipId(this.plan), line)
@@ -319,7 +335,8 @@ export class Game {
     c.fillStyle = 'rgba(0,0,0,0.55)'; c.fillRect(0, 0, LOGICAL_W, 20)
     c.fillStyle = '#fff'
     const left = this.machine.remaining
-    c.fillText(`${this.plan.body.toUpperCase()}  R${this.roundNumber}  ${this.machine.phase}  ${Math.ceil(left)}s`, 4, 3)
+    const dbg = this.roundNumber === 1 && this.debugSeed !== undefined ? ' DEBUG SEED' : ''
+    c.fillText(`${this.plan.body.toUpperCase()}  R${this.roundNumber}${dbg}  ${this.machine.phase}  ${Math.ceil(left)}s`, 4, 3)
     c.fillStyle = '#ffd23f'
     c.fillText(`BANK ${this.totals.coins}`, LOGICAL_W - 60, 3)
     const w = this.weather

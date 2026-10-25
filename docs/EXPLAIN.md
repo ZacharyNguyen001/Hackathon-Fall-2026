@@ -14,12 +14,13 @@
 ## Real data
 - `liveWeather.ts` fetches NOAA's current S-level and proton flux straight from the browser (CORS is open) when the page loads and then at most every 5 minutes. `noaa.ts` parses the JSON defensively and returns null for anything odd. If the fetch fails, `sampleWeather.ts` uses real responses we saved in `noaa-sample/`.
 - The HUD says DRILL when the real sun is quiet (S0). Only a real S1 or higher is called LIVE. It also shows `live`/`sample` and the time NOAA made the reading.
-- The map seed is a hash of that reading time + round number + body, so the same reading gives the same map.
+- The map seed is a hash of that reading time + round number + body, so the same reading gives the same map. This includes round 1 (it uses the live reading if it has arrived when you click Start, otherwise the saved sample's time). `?seed=<number>` is a debug-only override for round 1.
 - `facts.ts` holds the only real-world facts the results card may show, each with a source and a status (real / derived / proposed). The "What's real vs. tuned?" button on the results card lists which numbers are real, proposed or tuned.
 
 ## Sound
 - `scripts/bake-audio.ts` and `bake-sfx.ts` (run on a teammate's computer with a git-ignored ElevenLabs key) create the mp3 files in `public/audio/`. The key never reaches the browser.
 - `voice.ts` plays a baked clip for each warning / evac / all-clear line. If the clip is missing, errors, or does not start within 1.5 s, it uses the browser's built-in voice. Clips are preloaded after the click-to-start. Only one voice line plays at a time.
+- New voice lines: a drill notice at the start of each drill round's EXPLORE phase, and the round's fact card read aloud 3 s into RESULTS. Both show a caption at the bottom of the screen and use the same `playLine` fallback chain. Drill levels now cycle S2, S3, S4, S5, then repeat.
 - `sfx.ts` plays the effects (Geiger click, klaxon, coin, jump) and the looping Mars wind / Moon suit hum. Mute silences everything.
 
 ## Saving and art
